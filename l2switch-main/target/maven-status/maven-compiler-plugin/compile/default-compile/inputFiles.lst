@@ -1,0 +1,12 @@
+/opt/git/l2switch/l2switch-main/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/l2switch/l2switch/config/rev140528/$YangModelBindingProvider.java
+/opt/git/l2switch/l2switch-main/src/main/java/org/opendaylight/l2switch/inventory/InventoryReader.java
+/opt/git/l2switch/l2switch-main/src/main/java/org/opendaylight/l2switch/flow/FlowWriterServiceImpl.java
+/opt/git/l2switch/l2switch-main/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/l2switch/l2switch/config/rev140528/L2switchConfigBuilder.java
+/opt/git/l2switch/l2switch-main/src/main/java/org/opendaylight/l2switch/L2SwitchMainProvider.java
+/opt/git/l2switch/l2switch-main/src/main/java/org/opendaylight/l2switch/flow/FlowWriterService.java
+/opt/git/l2switch/l2switch-main/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/l2switch/l2switch/config/rev140528/L2switchConfigData.java
+/opt/git/l2switch/l2switch-main/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/l2switch/l2switch/config/rev140528/L2switchConfig.java
+/opt/git/l2switch/l2switch-main/src/main/java/org/opendaylight/l2switch/flow/InitialFlowWriter.java
+/opt/git/l2switch/l2switch-main/src/main/java/org/opendaylight/l2switch/flow/ReactiveFlowWriter.java
+/opt/git/l2switch/l2switch-main/src/main/java/org/opendaylight/l2switch/util/InstanceIdentifierUtils.java
+/opt/git/l2switch/l2switch-main/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/l2switch/l2switch/config/rev140528/$YangModuleInfoImpl.java

@@ -1,0 +1,4 @@
+org/opendaylight/l2switch/addresstracker/addressobserver/AddressObserverUsingArpTest.class
+org/opendaylight/l2switch/addresstracker/addressobserver/AddressObserverUsingIpv4Test.class
+org/opendaylight/l2switch/addresstracker/addressobserver/AddressObserverUsingIpv6Test.class
+org/opendaylight/l2switch/addresstracker/addressobserver/AddressObservationWriterTest.class

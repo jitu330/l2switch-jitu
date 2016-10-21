@@ -1,0 +1,5 @@
+org.opendaylight.l2switch
+org.opendaylight.l2switch.flow
+org.opendaylight.l2switch.inventory
+org.opendaylight.l2switch.util
+org.opendaylight.yang.gen.v1.urn.opendaylight.l2switch.l2switch.config.rev140528

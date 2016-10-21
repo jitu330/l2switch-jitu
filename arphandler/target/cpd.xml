@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmd-cpd>
+   <duplication lines="12" tokens="102">
+      <file line="37"
+            path="/opt/git/l2switch/arphandler/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/arp/handler/config/rev140528/ArpHandlerConfigBuilder.java"/>
+      <file line="316"
+            path="/opt/git/l2switch/arphandler/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/arp/handler/config/rev140528/ArpHandlerConfigBuilder.java"/>
+      <codefragment><![CDATA[    public ArpHandlerConfigBuilder(ArpHandlerConfig base) {
+        this._arpFlowHardTimeout = base.getArpFlowHardTimeout();
+        this._arpFlowIdleTimeout = base.getArpFlowIdleTimeout();
+        this._arpFlowPriority = base.getArpFlowPriority();
+        this._arpFlowTableId = base.getArpFlowTableId();
+        this._floodFlowHardTimeout = base.getFloodFlowHardTimeout();
+        this._floodFlowIdleTimeout = base.getFloodFlowIdleTimeout();
+        this._floodFlowInstallationDelay = base.getFloodFlowInstallationDelay();
+        this._floodFlowPriority = base.getFloodFlowPriority();
+        this._floodFlowTableId = base.getFloodFlowTableId();
+        this._isHybridMode = base.isIsHybridMode();
+        this._isProactiveFloodMode = base.isIsProactiveFloodMode();]]></codefragment>
+   </duplication>
+</pmd-cpd>

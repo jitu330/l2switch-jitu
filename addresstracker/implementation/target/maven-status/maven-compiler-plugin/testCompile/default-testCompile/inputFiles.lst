@@ -1,0 +1,4 @@
+/opt/git/l2switch/addresstracker/implementation/src/test/java/org/opendaylight/l2switch/addresstracker/addressobserver/AddressObservationWriterTest.java
+/opt/git/l2switch/addresstracker/implementation/src/test/java/org/opendaylight/l2switch/addresstracker/addressobserver/AddressObserverUsingArpTest.java
+/opt/git/l2switch/addresstracker/implementation/src/test/java/org/opendaylight/l2switch/addresstracker/addressobserver/AddressObserverUsingIpv6Test.java
+/opt/git/l2switch/addresstracker/implementation/src/test/java/org/opendaylight/l2switch/addresstracker/addressobserver/AddressObserverUsingIpv4Test.java

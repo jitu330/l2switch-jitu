@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>stp-status-aware-node-connector</title>
+  </head>
+  <body>
+    <h1>stp-status-aware-node-connector</h1>
+    
+    <h2>Base Information</h2>
+    <table>
+        <tr>
+            <td><strong>prefix</strong></td>
+            <td>loopremover</td>
+        </tr>
+        <tr>
+            <td><strong>namespace</strong></td>
+            <td>urn:opendaylight:l2switch:loopremover</td>
+        </tr>
+        <tr>
+            <td><strong>revision</strong></td>
+            <td>2014-07-14</td>
+        </tr>
+        <tr>
+            <td><strong>description</strong></td>
+            <td>Loop remover stp status aware Data Model</td>
+        </tr>
+        <tr>
+            <td><strong>yang-version</strong></td>
+            <td>1</td>
+        </tr>
+        <tr>
+    <td><strong>imports</strong></td><td>        inv:opendaylight-inventory 2013-08-19;
+            ext:yang-ext 2013-07-09;
+    </td>    </tr>
+    </table>
+    
+    <div>
+        <h3>Type Definitions Summary</h3>
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td>
+                <a href="#stp-status"><strong>stp-status</strong></a>
+                </td>
+                <td>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <h3>Groupings Summary</h3>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>
+            <a href="#stp-status-node-connector"><strong>stp-status-node-connector</strong></a>
+            </td>
+            <td>
+            </td>
+        </tr>
+    </table>
+    <h3>Augmentations Summary</h3>
+    <table>
+        <tr>
+            <th>Target</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>
+            <a href="#/opendaylight-inventory:nodes/opendaylight-inventory:node/opendaylight-inventory:node-connector/"><strong>/opendaylight-inventory:nodes/opendaylight-inventory:node/opendaylight-inventory:node-connector/</strong></a>
+            </td>
+            <td>
+            </td>
+        </tr>
+    </table>
+    
+    <h2>Type Definitions</h2>
+    <ul>
+    <li>
+        <h3 id="stp-status">stp-status</h3>
+        <ul>
+        <li>
+            Base type: <a href="#stp-status/enumeration">enumeration</a>
+        </li>
+        </ul>
+    </li>
+    </ul>
+    
+    
+    <h2>Groupings</h2>
+    <ul>
+    <li>
+        <h3 id="stp-status-node-connector">stp-status-node-connector</h3>
+        <ul>
+            <ul>
+            <strong><li>
+                leaf: status
+            </li>
+            </strong>
+            <ul>
+            <li>
+                type: <a href="#stp-status">stp-status</a>
+            </li>
+            </ul>
+            </ul>
+        </ul>
+    </li>
+    </ul>
+    
+    
+    
+    
+    <h2>Augmentations</h2>
+    
+    <ul>
+    <li>
+        <h3 id="/opendaylight-inventory:nodes/opendaylight-inventory:node/opendaylight-inventory:node-connector/">
+        Target [(urn:opendaylight:inventory)/opendaylight-inventory:nodes/opendaylight-inventory:node/opendaylight-inventory:node-connector/]</h3>
+            Status: <strong>CURRENT</strong>
+        <ul>
+        <strong><li>
+            leaf: status
+        </li>
+        </strong>
+        <ul>
+        <li>
+            type: <a href="#stp-status">stp-status</a>
+        </li>
+        </ul>
+        </ul>
+        
+        <h3>Example</h3>
+        <pre>
+        &lt;node-connector xmlns="urn:opendaylight:inventory"&gt;
+            &lt;id&gt;. . .&lt;/id&gt;
+            &lt;status&gt;. . .&lt;/status&gt;
+        &lt;/node-connector&gt;
+        </pre>
+    </li>
+    </ul>
+    
+    
+    
+    
+  </body>
+</html>

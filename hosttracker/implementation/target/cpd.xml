@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmd-cpd>
+   <duplication lines="15" tokens="113">
+      <file line="205"
+            path="/opt/git/l2switch/hosttracker/implementation/src/main/java/org/opendaylight/l2switch/hosttracker/plugin/internal/HostTrackerImpl.java"/>
+      <file line="221"
+            path="/opt/git/l2switch/hosttracker/implementation/src/main/java/org/opendaylight/l2switch/hosttracker/plugin/internal/HostTrackerImpl.java"/>
+      <codefragment><![CDATA[                for (Map.Entry<InstanceIdentifier<?>, DataObject> entrySet : updatedData.entrySet()) {
+                    InstanceIdentifier<?> iiD = entrySet.getKey();
+                    final DataObject dataObject = entrySet.getValue();
+                    if (dataObject instanceof Addresses) {
+                        packetReceived((Addresses) dataObject, iiD);
+                    } else if (dataObject instanceof Node) {
+                        synchronized (hosts) {
+                            hosts.putLocally((InstanceIdentifier<Node>) iiD, Host.createHost((Node) dataObject));
+                        }
+                    } else if (dataObject instanceof  Link) {
+                        synchronized (links) {
+                            links.putLocally((InstanceIdentifier<Link>) iiD, (Link) dataObject);
+                        }
+                    }
+                }]]></codefragment>
+   </duplication>
+</pmd-cpd>

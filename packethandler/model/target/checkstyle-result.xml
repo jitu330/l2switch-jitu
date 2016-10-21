@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="6.16">
+<file name="/opt/git/l2switch/packethandler/model/pom.xml">
+</file>
+<file name="/opt/git/l2switch/packethandler/model/src/main/yang/ipv4-packet.yang">
+</file>
+<file name="/opt/git/l2switch/packethandler/model/src/main/yang/arp-packet.yang">
+</file>
+<file name="/opt/git/l2switch/packethandler/model/src/main/yang/ethernet-packet.yang">
+</file>
+<file name="/opt/git/l2switch/packethandler/model/src/main/yang/ipv6-packet.yang">
+</file>
+<file name="/opt/git/l2switch/packethandler/model/src/main/yang/icmp-packet.yang">
+</file>
+<file name="/opt/git/l2switch/packethandler/model/src/main/yang/packet.yang">
+</file>
+</checkstyle>

@@ -1,0 +1,4 @@
+org.opendaylight.l2switch.hosttracker.plugin.internal
+org.opendaylight.l2switch.hosttracker.plugin.inventory
+org.opendaylight.l2switch.hosttracker.plugin.util
+org.opendaylight.yang.gen.v1.urn.opendaylight.l2switch.host.tracker.config.rev140528

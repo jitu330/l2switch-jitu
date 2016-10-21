@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmd-cpd>
+   <duplication lines="15" tokens="103">
+      <file line="37"
+            path="/opt/git/l2switch/addresstracker/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/address/tracker/rev140617/address/node/connector/AddressesBuilder.java"/>
+      <file line="204"
+            path="/opt/git/l2switch/addresstracker/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/address/tracker/rev140617/address/node/connector/AddressesBuilder.java"/>
+      <codefragment><![CDATA[    public AddressesBuilder(Addresses base) {
+        if (base.getKey() == null) {
+            this._key = new AddressesKey(
+                base.getId()
+            );
+            this._id = base.getId();
+        } else {
+            this._key = base.getKey();
+            this._id = _key.getId();
+        }
+        this._firstSeen = base.getFirstSeen();
+        this._ip = base.getIp();
+        this._lastSeen = base.getLastSeen();
+        this._mac = base.getMac();
+        this._vlan = base.getVlan();]]></codefragment>
+   </duplication>
+</pmd-cpd>

@@ -1,0 +1,4 @@
+org/opendaylight/l2switch/loopremover/topology/NetworkGraphImplTest.class
+org/opendaylight/l2switch/loopremover/topology/TopologyLinkDataChangeHandlerTest.class
+org/opendaylight/l2switch/loopremover/util/InstanceIdentifierUtilsTest.class
+org/opendaylight/l2switch/loopremover/flow/InitialFlowWriterTest.class

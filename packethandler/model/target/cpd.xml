@@ -1,0 +1,579 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmd-cpd>
+   <duplication lines="60" tokens="321">
+      <file line="24"
+            path="/opt/git/l2switch/packethandler/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/ipv4/rev140528/$YangModuleInfoImpl.java"/>
+      <file line="25"
+            path="/opt/git/l2switch/packethandler/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/ipv6/rev140528/$YangModuleInfoImpl.java"/>
+      <codefragment><![CDATA[        Set<YangModuleInfo> set = new HashSet<>();
+        set.add(org.opendaylight.yang.gen.v1.urn.opendaylight.packet.basepacket.rev140528.$YangModuleInfoImpl.getInstance());
+        set.add(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.$YangModuleInfoImpl.getInstance());
+        importedModules = ImmutableSet.copyOf(set);
+    
+        InputStream stream = $YangModuleInfoImpl.class.getResourceAsStream(resourcePath);
+        if (stream == null) {
+            throw new IllegalStateException("Resource '" + resourcePath + "' is missing");
+        }
+        try {
+            stream.close();
+        } catch (IOException e) {
+        // Resource leak, but there is nothing we can do
+        }
+    }
+    
+    @Override
+    public java.lang.String getName() {
+        return name;
+    }
+    
+    @Override
+    public java.lang.String getRevision() {
+        return revision;
+    }
+    
+    @Override
+    public java.lang.String getNamespace() {
+        return namespace;
+    }
+    
+    @Override
+    public InputStream getModuleSourceStream() throws IOException {
+        InputStream stream = $YangModuleInfoImpl.class.getResourceAsStream(resourcePath);
+        if (stream == null) {
+            throw new IOException("Resource " + resourcePath + " is missing");
+        }
+        return stream;
+    }
+    
+    @Override
+    public Set<YangModuleInfo> getImportedModules() {
+        return importedModules;
+    }
+    
+    @Override
+    public java.lang.String toString() {
+        java.lang.StringBuilder sb = new java.lang.StringBuilder(this.getClass().getCanonicalName());
+        sb.append("[");
+        sb.append("name = " + name);
+        sb.append(", namespace = " + namespace);
+        sb.append(", revision = " + revision);
+        sb.append(", resourcePath = " + resourcePath);
+        sb.append(", imports = " + importedModules);
+        sb.append("]");
+        return sb.toString();
+    }
+    
+    
+}]]></codefragment>
+   </duplication>
+   <duplication lines="59" tokens="299">
+      <file line="26"
+            path="/opt/git/l2switch/packethandler/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/arp/rev140528/$YangModuleInfoImpl.java"/>
+      <file line="25"
+            path="/opt/git/l2switch/packethandler/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/ipv4/rev140528/$YangModuleInfoImpl.java"/>
+      <file line="26"
+            path="/opt/git/l2switch/packethandler/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/ipv6/rev140528/$YangModuleInfoImpl.java"/>
+      <codefragment><![CDATA[        set.add(org.opendaylight.yang.gen.v1.urn.opendaylight.packet.ethernet.rev140528.$YangModuleInfoImpl.getInstance());
+        set.add(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.$YangModuleInfoImpl.getInstance());
+        importedModules = ImmutableSet.copyOf(set);
+    
+        InputStream stream = $YangModuleInfoImpl.class.getResourceAsStream(resourcePath);
+        if (stream == null) {
+            throw new IllegalStateException("Resource '" + resourcePath + "' is missing");
+        }
+        try {
+            stream.close();
+        } catch (IOException e) {
+        // Resource leak, but there is nothing we can do
+        }
+    }
+    
+    @Override
+    public java.lang.String getName() {
+        return name;
+    }
+    
+    @Override
+    public java.lang.String getRevision() {
+        return revision;
+    }
+    
+    @Override
+    public java.lang.String getNamespace() {
+        return namespace;
+    }
+    
+    @Override
+    public InputStream getModuleSourceStream() throws IOException {
+        InputStream stream = $YangModuleInfoImpl.class.getResourceAsStream(resourcePath);
+        if (stream == null) {
+            throw new IOException("Resource " + resourcePath + " is missing");
+        }
+        return stream;
+    }
+    
+    @Override
+    public Set<YangModuleInfo> getImportedModules() {
+        return importedModules;
+    }
+    
+    @Override
+    public java.lang.String toString() {
+        java.lang.StringBuilder sb = new java.lang.StringBuilder(this.getClass().getCanonicalName());
+        sb.append("[");
+        sb.append("name = " + name);
+        sb.append(", namespace = " + namespace);
+        sb.append(", revision = " + revision);
+        sb.append(", resourcePath = " + resourcePath);
+        sb.append(", imports = " + importedModules);
+        sb.append("]");
+        return sb.toString();
+    }
+    
+    
+}]]></codefragment>
+   </duplication>
+   <duplication lines="58" tokens="261">
+      <file line="27"
+            path="/opt/git/l2switch/packethandler/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/arp/rev140528/$YangModuleInfoImpl.java"/>
+      <file line="27"
+            path="/opt/git/l2switch/packethandler/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/ethernet/rev140528/$YangModuleInfoImpl.java"/>
+      <file line="26"
+            path="/opt/git/l2switch/packethandler/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/ipv4/rev140528/$YangModuleInfoImpl.java"/>
+      <file line="27"
+            path="/opt/git/l2switch/packethandler/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/ipv6/rev140528/$YangModuleInfoImpl.java"/>
+      <codefragment><![CDATA[        set.add(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.$YangModuleInfoImpl.getInstance());
+        importedModules = ImmutableSet.copyOf(set);
+    
+        InputStream stream = $YangModuleInfoImpl.class.getResourceAsStream(resourcePath);
+        if (stream == null) {
+            throw new IllegalStateException("Resource '" + resourcePath + "' is missing");
+        }
+        try {
+            stream.close();
+        } catch (IOException e) {
+        // Resource leak, but there is nothing we can do
+        }
+    }
+    
+    @Override
+    public java.lang.String getName() {
+        return name;
+    }
+    
+    @Override
+    public java.lang.String getRevision() {
+        return revision;
+    }
+    
+    @Override
+    public java.lang.String getNamespace() {
+        return namespace;
+    }
+    
+    @Override
+    public InputStream getModuleSourceStream() throws IOException {
+        InputStream stream = $YangModuleInfoImpl.class.getResourceAsStream(resourcePath);
+        if (stream == null) {
+            throw new IOException("Resource " + resourcePath + " is missing");
+        }
+        return stream;
+    }
+    
+    @Override
+    public Set<YangModuleInfo> getImportedModules() {
+        return importedModules;
+    }
+    
+    @Override
+    public java.lang.String toString() {
+        java.lang.StringBuilder sb = new java.lang.StringBuilder(this.getClass().getCanonicalName());
+        sb.append("[");
+        sb.append("name = " + name);
+        sb.append(", namespace = " + namespace);
+        sb.append(", revision = " + revision);
+        sb.append(", resourcePath = " + resourcePath);
+        sb.append(", imports = " + importedModules);
+        sb.append("]");
+        return sb.toString();
+    }
+    
+    
+}]]></codefragment>
+   </duplication>
+   <duplication lines="58" tokens="257">
+      <file line="27"
+            path="/opt/git/l2switch/packethandler/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/arp/rev140528/$YangModuleInfoImpl.java"/>
+      <file line="30"
+            path="/opt/git/l2switch/packethandler/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/basepacket/rev140528/$YangModuleInfoImpl.java"/>
+      <file line="27"
+            path="/opt/git/l2switch/packethandler/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/ethernet/rev140528/$YangModuleInfoImpl.java"/>
+      <file line="25"
+            path="/opt/git/l2switch/packethandler/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/icmp/rev140528/$YangModuleInfoImpl.java"/>
+      <file line="26"
+            path="/opt/git/l2switch/packethandler/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/ipv4/rev140528/$YangModuleInfoImpl.java"/>
+      <file line="27"
+            path="/opt/git/l2switch/packethandler/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/ipv6/rev140528/$YangModuleInfoImpl.java"/>
+      <codefragment><![CDATA[        set.add(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.$YangModuleInfoImpl.getInstance());
+        importedModules = ImmutableSet.copyOf(set);
+    
+        InputStream stream = $YangModuleInfoImpl.class.getResourceAsStream(resourcePath);
+        if (stream == null) {
+            throw new IllegalStateException("Resource '" + resourcePath + "' is missing");
+        }
+        try {
+            stream.close();
+        } catch (IOException e) {
+        // Resource leak, but there is nothing we can do
+        }
+    }
+    
+    @Override
+    public java.lang.String getName() {
+        return name;
+    }
+    
+    @Override
+    public java.lang.String getRevision() {
+        return revision;
+    }
+    
+    @Override
+    public java.lang.String getNamespace() {
+        return namespace;
+    }
+    
+    @Override
+    public InputStream getModuleSourceStream() throws IOException {
+        InputStream stream = $YangModuleInfoImpl.class.getResourceAsStream(resourcePath);
+        if (stream == null) {
+            throw new IOException("Resource " + resourcePath + " is missing");
+        }
+        return stream;
+    }
+    
+    @Override
+    public Set<YangModuleInfo> getImportedModules() {
+        return importedModules;
+    }
+    
+    @Override
+    public java.lang.String toString() {
+        java.lang.StringBuilder sb = new java.lang.StringBuilder(this.getClass().getCanonicalName());
+        sb.append("[");
+        sb.append("name = " + name);
+        sb.append(", namespace = " + namespace);
+        sb.append(", revision = " + revision);
+        sb.append(", resourcePath = " + resourcePath);
+        sb.append(", imports = " + importedModules);
+        sb.append("]");
+        return sb.toString();
+    }
+    
+    
+}]]></codefragment>
+   </duplication>
+   <duplication lines="45" tokens="255">
+      <file line="47"
+            path="/opt/git/l2switch/packethandler/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/arp/rev140528/ArpPacketReceivedBuilder.java"/>
+      <file line="47"
+            path="/opt/git/l2switch/packethandler/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/ethernet/rev140528/EthernetPacketReceivedBuilder.java"/>
+      <file line="47"
+            path="/opt/git/l2switch/packethandler/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/icmp/rev140528/IcmpPacketReceivedBuilder.java"/>
+      <file line="47"
+            path="/opt/git/l2switch/packethandler/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/ipv4/rev140528/Ipv4PacketReceivedBuilder.java"/>
+      <file line="47"
+            path="/opt/git/l2switch/packethandler/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/ipv6/rev140528/Ipv6PacketReceivedBuilder.java"/>
+      <codefragment><![CDATA[            AugmentationHolder<org.opendaylight.yang.gen.v1.urn.opendaylight.packet.arp.rev140528.ArpPacketReceived> casted =(AugmentationHolder<org.opendaylight.yang.gen.v1.urn.opendaylight.packet.arp.rev140528.ArpPacketReceived>) base;
+            if (!casted.augmentations().isEmpty()) {
+                this.augmentation = new HashMap<>(casted.augmentations());
+            }
+        }
+    }
+
+    /**
+     *Set fields from given grouping argument. Valid argument is instance of one of following types:
+     * <ul>
+     * <li>org.opendaylight.yang.gen.v1.urn.opendaylight.packet.basepacket.rev140528.PacketPayload</li>
+     * <li>org.opendaylight.yang.gen.v1.urn.opendaylight.packet.basepacket.rev140528.PacketChainGrp</li>
+     * </ul>
+     *
+     * @param arg grouping object
+     * @throws IllegalArgumentException if given argument is none of valid types
+    */
+    public void fieldsFrom(DataObject arg) {
+        boolean isValidArg = false;
+        if (arg instanceof org.opendaylight.yang.gen.v1.urn.opendaylight.packet.basepacket.rev140528.PacketPayload) {
+            this._payload = ((org.opendaylight.yang.gen.v1.urn.opendaylight.packet.basepacket.rev140528.PacketPayload)arg).getPayload();
+            isValidArg = true;
+        }
+        if (arg instanceof org.opendaylight.yang.gen.v1.urn.opendaylight.packet.basepacket.rev140528.PacketChainGrp) {
+            this._packetChain = ((org.opendaylight.yang.gen.v1.urn.opendaylight.packet.basepacket.rev140528.PacketChainGrp)arg).getPacketChain();
+            isValidArg = true;
+        }
+        if (!isValidArg) {
+            throw new IllegalArgumentException(
+              "expected one of: [org.opendaylight.yang.gen.v1.urn.opendaylight.packet.basepacket.rev140528.PacketPayload, org.opendaylight.yang.gen.v1.urn.opendaylight.packet.basepacket.rev140528.PacketChainGrp] \n" +
+              "but was: " + arg
+            );
+        }
+    }
+
+    public List<PacketChain> getPacketChain() {
+        return _packetChain;
+    }
+    
+    public byte[] getPayload() {
+        return _payload == null ? null : _payload.clone();
+    }
+    
+    @SuppressWarnings("unchecked")
+    public <E extends Augmentation<org.opendaylight.yang.gen.v1.urn.opendaylight.packet.arp.rev140528.ArpPacketReceived>> E getAugmentation(java.lang.Class<E> augmentationType) {]]></codefragment>
+   </duplication>
+   <duplication lines="36" tokens="178">
+      <file line="173"
+            path="/opt/git/l2switch/packethandler/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/arp/rev140528/ArpPacketReceivedBuilder.java"/>
+      <file line="173"
+            path="/opt/git/l2switch/packethandler/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/ethernet/rev140528/EthernetPacketReceivedBuilder.java"/>
+      <file line="173"
+            path="/opt/git/l2switch/packethandler/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/icmp/rev140528/IcmpPacketReceivedBuilder.java"/>
+      <file line="173"
+            path="/opt/git/l2switch/packethandler/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/ipv4/rev140528/Ipv4PacketReceivedBuilder.java"/>
+      <file line="173"
+            path="/opt/git/l2switch/packethandler/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/ipv6/rev140528/Ipv6PacketReceivedBuilder.java"/>
+      <codefragment><![CDATA[        public <E extends Augmentation<org.opendaylight.yang.gen.v1.urn.opendaylight.packet.arp.rev140528.ArpPacketReceived>> E getAugmentation(java.lang.Class<E> augmentationType) {
+            if (augmentationType == null) {
+                throw new IllegalArgumentException("Augmentation Type reference cannot be NULL!");
+            }
+            return (E) augmentation.get(augmentationType);
+        }
+
+        private int hash = 0;
+        private volatile boolean hashValid = false;
+        
+        @Override
+        public int hashCode() {
+            if (hashValid) {
+                return hash;
+            }
+        
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + Objects.hashCode(_packetChain);
+            result = prime * result + Arrays.hashCode(_payload);
+            result = prime * result + Objects.hashCode(augmentation);
+        
+            hash = result;
+            hashValid = true;
+            return result;
+        }
+
+        @Override
+        public boolean equals(java.lang.Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (!(obj instanceof DataObject)) {
+                return false;
+            }
+            if (!org.opendaylight.yang.gen.v1.urn.opendaylight.packet.arp.rev140528.ArpPacketReceived.class.equals(((DataObject)obj).getImplementedInterface())) {]]></codefragment>
+   </duplication>
+   <duplication lines="25" tokens="166">
+      <file line="69"
+            path="/opt/git/l2switch/packethandler/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/basepacket/rev140528/packet/chain/grp/packet/chain/packet/RawPacketBuilder.java"/>
+      <file line="61"
+            path="/opt/git/l2switch/packethandler/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/icmp/rev140528/icmp/packet/received/packet/chain/packet/IcmpPacketBuilder.java"/>
+      <file line="98"
+            path="/opt/git/l2switch/packethandler/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/ipv4/rev140528/ipv4/packet/received/packet/chain/packet/Ipv4PacketBuilder.java"/>
+      <file line="81"
+            path="/opt/git/l2switch/packethandler/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/ipv6/rev140528/ipv6/packet/received/packet/chain/packet/Ipv6PacketBuilder.java"/>
+      <codefragment><![CDATA[            AugmentationHolder<org.opendaylight.yang.gen.v1.urn.opendaylight.packet.basepacket.rev140528.packet.chain.grp.packet.chain.packet.RawPacket> casted =(AugmentationHolder<org.opendaylight.yang.gen.v1.urn.opendaylight.packet.basepacket.rev140528.packet.chain.grp.packet.chain.packet.RawPacket>) base;
+            if (!casted.augmentations().isEmpty()) {
+                this.augmentation = new HashMap<>(casted.augmentations());
+            }
+        }
+    }
+
+    /**
+     *Set fields from given grouping argument. Valid argument is instance of one of following types:
+     * <ul>
+     * <li>org.opendaylight.yang.gen.v1.urn.opendaylight.packet.basepacket.rev140528.PacketFields</li>
+     * <li>org.opendaylight.yang.gen.v1.urn.opendaylight.packet.basepacket.rev140528.RawPacketFields</li>
+     * </ul>
+     *
+     * @param arg grouping object
+     * @throws IllegalArgumentException if given argument is none of valid types
+    */
+    public void fieldsFrom(DataObject arg) {
+        boolean isValidArg = false;
+        if (arg instanceof org.opendaylight.yang.gen.v1.urn.opendaylight.packet.basepacket.rev140528.PacketFields) {
+            this._payloadOffset = ((org.opendaylight.yang.gen.v1.urn.opendaylight.packet.basepacket.rev140528.PacketFields)arg).getPayloadOffset();
+            this._payloadLength = ((org.opendaylight.yang.gen.v1.urn.opendaylight.packet.basepacket.rev140528.PacketFields)arg).getPayloadLength();
+            isValidArg = true;
+        }
+        if (arg instanceof org.opendaylight.yang.gen.v1.urn.opendaylight.packet.basepacket.rev140528.RawPacketFields) {]]></codefragment>
+   </duplication>
+   <duplication lines="19" tokens="165">
+      <file line="72"
+            path="/opt/git/l2switch/packethandler/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/ipv4/rev140528/ipv4/packet/received/packet/chain/packet/Ipv4PacketBuilder.java"/>
+      <file line="468"
+            path="/opt/git/l2switch/packethandler/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/ipv4/rev140528/ipv4/packet/received/packet/chain/packet/Ipv4PacketBuilder.java"/>
+      <codefragment><![CDATA[    public Ipv4PacketBuilder(Ipv4Packet base) {
+        this._checksum = base.getChecksum();
+        this._destinationIpv4 = base.getDestinationIpv4();
+        this._dscp = base.getDscp();
+        this._ecn = base.getEcn();
+        this._fragmentOffset = base.getFragmentOffset();
+        this._id = base.getId();
+        this._ihl = base.getIhl();
+        this._ipv4Length = base.getIpv4Length();
+        this._ipv4Options = base.getIpv4Options();
+        this._payloadLength = base.getPayloadLength();
+        this._payloadOffset = base.getPayloadOffset();
+        this._protocol = base.getProtocol();
+        this._sourceIpv4 = base.getSourceIpv4();
+        this._ttl = base.getTtl();
+        this._version = base.getVersion();
+        this._dfFlag = base.isDfFlag();
+        this._mfFlag = base.isMfFlag();
+        this._reservedFlag = base.isReservedFlag();]]></codefragment>
+   </duplication>
+   <duplication lines="33" tokens="134">
+      <file line="241"
+            path="/opt/git/l2switch/packethandler/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/arp/rev140528/ArpPacketReceivedBuilder.java"/>
+      <file line="241"
+            path="/opt/git/l2switch/packethandler/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/ethernet/rev140528/EthernetPacketReceivedBuilder.java"/>
+      <file line="241"
+            path="/opt/git/l2switch/packethandler/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/icmp/rev140528/IcmpPacketReceivedBuilder.java"/>
+      <file line="241"
+            path="/opt/git/l2switch/packethandler/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/ipv4/rev140528/Ipv4PacketReceivedBuilder.java"/>
+      <file line="241"
+            path="/opt/git/l2switch/packethandler/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/ipv6/rev140528/Ipv6PacketReceivedBuilder.java"/>
+      <codefragment><![CDATA[            java.lang.StringBuilder builder = new java.lang.StringBuilder ("ArpPacketReceived [");
+            boolean first = true;
+        
+            if (_packetChain != null) {
+                if (first) {
+                    first = false;
+                } else {
+                    builder.append(", ");
+                }
+                builder.append("_packetChain=");
+                builder.append(_packetChain);
+             }
+            if (_payload != null) {
+                if (first) {
+                    first = false;
+                } else {
+                    builder.append(", ");
+                }
+                builder.append("_payload=");
+                builder.append(Arrays.toString(_payload));
+             }
+            if (first) {
+                first = false;
+            } else {
+                builder.append(", ");
+            }
+            builder.append("augmentation=");
+            builder.append(augmentation.values());
+            return builder.append(']').toString();
+        }
+    }
+
+}]]></codefragment>
+   </duplication>
+   <duplication lines="14" tokens="120">
+      <file line="66"
+            path="/opt/git/l2switch/packethandler/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/basepacket/rev140528/raw/packet/fields/MatchBuilder.java"/>
+      <file line="313"
+            path="/opt/git/l2switch/packethandler/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/basepacket/rev140528/raw/packet/fields/MatchBuilder.java"/>
+      <codefragment><![CDATA[    public MatchBuilder(Match base) {
+        this._ethernetMatch = base.getEthernetMatch();
+        this._icmpv4Match = base.getIcmpv4Match();
+        this._icmpv6Match = base.getIcmpv6Match();
+        this._inPhyPort = base.getInPhyPort();
+        this._inPort = base.getInPort();
+        this._ipMatch = base.getIpMatch();
+        this._layer3Match = base.getLayer3Match();
+        this._layer4Match = base.getLayer4Match();
+        this._metadata = base.getMetadata();
+        this._protocolMatchFields = base.getProtocolMatchFields();
+        this._tcpFlagsMatch = base.getTcpFlagsMatch();
+        this._tunnel = base.getTunnel();
+        this._vlanMatch = base.getVlanMatch();]]></codefragment>
+   </duplication>
+   <duplication lines="10" tokens="115">
+      <file line="104"
+            path="/opt/git/l2switch/packethandler/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/arp/rev140528/arp/packet/received/packet/chain/packet/ArpPacketBuilder.java"/>
+      <file line="93"
+            path="/opt/git/l2switch/packethandler/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/ethernet/rev140528/ethernet/packet/received/packet/chain/packet/EthernetPacketBuilder.java"/>
+      <codefragment><![CDATA[            this._destinationProtocolAddress = ((org.opendaylight.yang.gen.v1.urn.opendaylight.packet.arp.rev140528.ArpPacketFields)arg).getDestinationProtocolAddress();
+            isValidArg = true;
+        }
+        if (arg instanceof org.opendaylight.yang.gen.v1.urn.opendaylight.packet.basepacket.rev140528.PacketFields) {
+            this._payloadOffset = ((org.opendaylight.yang.gen.v1.urn.opendaylight.packet.basepacket.rev140528.PacketFields)arg).getPayloadOffset();
+            this._payloadLength = ((org.opendaylight.yang.gen.v1.urn.opendaylight.packet.basepacket.rev140528.PacketFields)arg).getPayloadLength();
+            isValidArg = true;
+        }
+        if (!isValidArg) {
+            throw new IllegalArgumentException(]]></codefragment>
+   </duplication>
+   <duplication lines="13" tokens="111">
+      <file line="61"
+            path="/opt/git/l2switch/packethandler/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/ipv6/rev140528/ipv6/packet/received/packet/chain/packet/Ipv6PacketBuilder.java"/>
+      <file line="349"
+            path="/opt/git/l2switch/packethandler/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/ipv6/rev140528/ipv6/packet/received/packet/chain/packet/Ipv6PacketBuilder.java"/>
+      <codefragment><![CDATA[    public Ipv6PacketBuilder(Ipv6Packet base) {
+        this._destinationIpv6 = base.getDestinationIpv6();
+        this._dscp = base.getDscp();
+        this._ecn = base.getEcn();
+        this._extensionHeaders = base.getExtensionHeaders();
+        this._flowLabel = base.getFlowLabel();
+        this._hopLimit = base.getHopLimit();
+        this._ipv6Length = base.getIpv6Length();
+        this._nextHeader = base.getNextHeader();
+        this._payloadLength = base.getPayloadLength();
+        this._payloadOffset = base.getPayloadOffset();
+        this._sourceIpv6 = base.getSourceIpv6();
+        this._version = base.getVersion();]]></codefragment>
+   </duplication>
+   <duplication lines="12" tokens="102">
+      <file line="57"
+            path="/opt/git/l2switch/packethandler/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/arp/rev140528/arp/packet/received/packet/chain/packet/ArpPacketBuilder.java"/>
+      <file line="302"
+            path="/opt/git/l2switch/packethandler/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/arp/rev140528/arp/packet/received/packet/chain/packet/ArpPacketBuilder.java"/>
+      <codefragment><![CDATA[    public ArpPacketBuilder(ArpPacket base) {
+        this._destinationHardwareAddress = base.getDestinationHardwareAddress();
+        this._destinationProtocolAddress = base.getDestinationProtocolAddress();
+        this._hardwareLength = base.getHardwareLength();
+        this._hardwareType = base.getHardwareType();
+        this._operation = base.getOperation();
+        this._payloadLength = base.getPayloadLength();
+        this._payloadOffset = base.getPayloadOffset();
+        this._protocolLength = base.getProtocolLength();
+        this._protocolType = base.getProtocolType();
+        this._sourceHardwareAddress = base.getSourceHardwareAddress();
+        this._sourceProtocolAddress = base.getSourceProtocolAddress();]]></codefragment>
+   </duplication>
+   <duplication lines="6" tokens="101">
+      <file line="107"
+            path="/opt/git/l2switch/packethandler/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/arp/rev140528/arp/packet/received/packet/chain/packet/ArpPacketBuilder.java"/>
+      <file line="88"
+            path="/opt/git/l2switch/packethandler/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/basepacket/rev140528/packet/chain/grp/packet/chain/packet/RawPacketBuilder.java"/>
+      <file line="96"
+            path="/opt/git/l2switch/packethandler/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/ethernet/rev140528/ethernet/packet/received/packet/chain/packet/EthernetPacketBuilder.java"/>
+      <file line="80"
+            path="/opt/git/l2switch/packethandler/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/icmp/rev140528/icmp/packet/received/packet/chain/packet/IcmpPacketBuilder.java"/>
+      <file line="117"
+            path="/opt/git/l2switch/packethandler/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/ipv4/rev140528/ipv4/packet/received/packet/chain/packet/Ipv4PacketBuilder.java"/>
+      <file line="100"
+            path="/opt/git/l2switch/packethandler/model/src/main/yang-gen-code/org/opendaylight/yang/gen/v1/urn/opendaylight/packet/ipv6/rev140528/ipv6/packet/received/packet/chain/packet/Ipv6PacketBuilder.java"/>
+      <codefragment><![CDATA[        if (arg instanceof org.opendaylight.yang.gen.v1.urn.opendaylight.packet.basepacket.rev140528.PacketFields) {
+            this._payloadOffset = ((org.opendaylight.yang.gen.v1.urn.opendaylight.packet.basepacket.rev140528.PacketFields)arg).getPayloadOffset();
+            this._payloadLength = ((org.opendaylight.yang.gen.v1.urn.opendaylight.packet.basepacket.rev140528.PacketFields)arg).getPayloadLength();
+            isValidArg = true;
+        }
+        if (!isValidArg) {]]></codefragment>
+   </duplication>
+</pmd-cpd>

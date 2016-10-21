@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="6.16">
+<file name="/opt/git/l2switch/addresstracker/model/pom.xml">
+</file>
+<file name="/opt/git/l2switch/addresstracker/model/src/main/yang/address-tracker.yang">
+</file>
+<file name="/opt/git/l2switch/addresstracker/implementation/pom.xml">
+</file>
+<file name="/opt/git/l2switch/addresstracker/implementation/src/test/java/org/opendaylight/l2switch/addresstracker/addressobserver/AddressObservationWriterTest.java">
+</file>
+<file name="/opt/git/l2switch/addresstracker/implementation/src/test/java/org/opendaylight/l2switch/addresstracker/addressobserver/AddressObserverUsingIpv6Test.java">
+</file>
+<file name="/opt/git/l2switch/addresstracker/implementation/src/test/java/org/opendaylight/l2switch/addresstracker/addressobserver/AddressObserverUsingArpTest.java">
+</file>
+<file name="/opt/git/l2switch/addresstracker/implementation/src/test/java/org/opendaylight/l2switch/addresstracker/addressobserver/AddressObserverUsingIpv4Test.java">
+</file>
+<file name="/opt/git/l2switch/addresstracker/implementation/src/main/yang/address-tracker-config.yang">
+</file>
+<file name="/opt/git/l2switch/addresstracker/implementation/src/main/resources/org/opendaylight/blueprint/address-tracker.xml">
+</file>
+<file name="/opt/git/l2switch/addresstracker/implementation/src/main/java/org/opendaylight/l2switch/addresstracker/addressobserver/AddressObserverUsingIpv4.java">
+</file>
+<file name="/opt/git/l2switch/addresstracker/implementation/src/main/java/org/opendaylight/l2switch/addresstracker/addressobserver/AddressObservationWriter.java">
+</file>
+<file name="/opt/git/l2switch/addresstracker/implementation/src/main/java/org/opendaylight/l2switch/addresstracker/addressobserver/AddressTrackerProvider.java">
+</file>
+<file name="/opt/git/l2switch/addresstracker/implementation/src/main/java/org/opendaylight/l2switch/addresstracker/addressobserver/AddressObserverUsingIpv6.java">
+</file>
+<file name="/opt/git/l2switch/addresstracker/implementation/src/main/java/org/opendaylight/l2switch/addresstracker/addressobserver/AddressObserverUsingArp.java">
+</file>
+<file name="/opt/git/l2switch/addresstracker/pom.xml">
+</file>
+</checkstyle>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="6.16">
+<file name="/opt/git/l2switch/hosttracker/implementation/pom.xml">
+</file>
+<file name="/opt/git/l2switch/hosttracker/implementation/src/main/yang/host-tracker-config.yang">
+</file>
+<file name="/opt/git/l2switch/hosttracker/implementation/src/main/resources/org/opendaylight/blueprint/host-tracker.xml">
+</file>
+<file name="/opt/git/l2switch/hosttracker/implementation/src/main/java/org/opendaylight/l2switch/hosttracker/plugin/util/Utilities.java">
+</file>
+<file name="/opt/git/l2switch/hosttracker/implementation/src/main/java/org/opendaylight/l2switch/hosttracker/plugin/util/Compare.java">
+</file>
+<file name="/opt/git/l2switch/hosttracker/implementation/src/main/java/org/opendaylight/l2switch/hosttracker/plugin/internal/OperationProcessor.java">
+</file>
+<file name="/opt/git/l2switch/hosttracker/implementation/src/main/java/org/opendaylight/l2switch/hosttracker/plugin/internal/ConcurrentClusterAwareLinkHashMap.java">
+</file>
+<file name="/opt/git/l2switch/hosttracker/implementation/src/main/java/org/opendaylight/l2switch/hosttracker/plugin/internal/ConcurrentClusterAwareHostHashMap.java">
+</file>
+<file name="/opt/git/l2switch/hosttracker/implementation/src/main/java/org/opendaylight/l2switch/hosttracker/plugin/internal/HostTrackerImpl.java">
+</file>
+<file name="/opt/git/l2switch/hosttracker/implementation/src/main/java/org/opendaylight/l2switch/hosttracker/plugin/internal/HostTrackerOperation.java">
+</file>
+<file name="/opt/git/l2switch/hosttracker/implementation/src/main/java/org/opendaylight/l2switch/hosttracker/plugin/internal/SimpleAddressObserver.java">
+</file>
+<file name="/opt/git/l2switch/hosttracker/implementation/src/main/java/org/opendaylight/l2switch/hosttracker/plugin/inventory/Host.java">
+</file>
+</checkstyle>

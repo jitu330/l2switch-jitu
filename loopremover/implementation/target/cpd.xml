@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmd-cpd>
+   <duplication lines="23" tokens="114">
+      <file line="259"
+            path="/opt/git/l2switch/loopremover/implementation/src/main/java/org/opendaylight/l2switch/loopremover/topology/TopologyLinkDataChangeHandler.java"/>
+      <file line="350"
+            path="/opt/git/l2switch/loopremover/implementation/src/main/java/org/opendaylight/l2switch/loopremover/topology/TopologyLinkDataChangeHandler.java"/>
+      <codefragment><![CDATA[    private List<Node> getHostsFromTopology() {
+        InstanceIdentifier<Topology> topologyInstanceIdentifier = InstanceIdentifierUtils
+                .generateTopologyInstanceIdentifier(topologyId);
+        Topology topology = null;
+        ReadOnlyTransaction readOnlyTransaction = dataBroker.newReadOnlyTransaction();
+        try {
+            Optional<Topology> topologyOptional = readOnlyTransaction
+                    .read(LogicalDatastoreType.OPERATIONAL, topologyInstanceIdentifier).get();
+            if (topologyOptional.isPresent()) {
+                topology = topologyOptional.get();
+            }
+        } catch (Exception e) {
+            LOG.error("Error reading topology {}", topologyInstanceIdentifier);
+            readOnlyTransaction.close();
+            throw new RuntimeException(
+                    "Error reading from operational store, topology : " + topologyInstanceIdentifier, e);
+        }
+        readOnlyTransaction.close();
+        if (topology == null) {
+            return null;
+        }            
+        
+        List<Node> nodes = topology.getNode();]]></codefragment>
+   </duplication>
+</pmd-cpd>

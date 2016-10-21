@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="6.16">
+<file name="/opt/git/l2switch/loopremover/model/pom.xml">
+</file>
+<file name="/opt/git/l2switch/loopremover/model/src/main/yang/stp-status-aware-nodeconnnector.yang">
+</file>
+<file name="/opt/git/l2switch/loopremover/implementation/pom.xml">
+</file>
+<file name="/opt/git/l2switch/loopremover/implementation/src/test/java/org/opendaylight/l2switch/loopremover/util/InstanceIdentifierUtilsTest.java">
+</file>
+<file name="/opt/git/l2switch/loopremover/implementation/src/test/java/org/opendaylight/l2switch/loopremover/topology/NetworkGraphImplTest.java">
+</file>
+<file name="/opt/git/l2switch/loopremover/implementation/src/test/java/org/opendaylight/l2switch/loopremover/topology/TopologyLinkDataChangeHandlerTest.java">
+</file>
+<file name="/opt/git/l2switch/loopremover/implementation/src/test/java/org/opendaylight/l2switch/loopremover/flow/InitialFlowWriterTest.java">
+</file>
+<file name="/opt/git/l2switch/loopremover/implementation/src/main/yang/loop-remover-config.yang">
+</file>
+<file name="/opt/git/l2switch/loopremover/implementation/src/main/resources/org/opendaylight/blueprint/loop-remover.xml">
+</file>
+<file name="/opt/git/l2switch/loopremover/implementation/src/main/java/org/opendaylight/l2switch/loopremover/util/InstanceIdentifierUtils.java">
+</file>
+<file name="/opt/git/l2switch/loopremover/implementation/src/main/java/org/opendaylight/l2switch/loopremover/topology/TopologyLinkDataChangeHandler.java">
+</file>
+<file name="/opt/git/l2switch/loopremover/implementation/src/main/java/org/opendaylight/l2switch/loopremover/topology/CustomFlowWriter.java">
+</file>
+<file name="/opt/git/l2switch/loopremover/implementation/src/main/java/org/opendaylight/l2switch/loopremover/topology/NetworkGraphService.java">
+</file>
+<file name="/opt/git/l2switch/loopremover/implementation/src/main/java/org/opendaylight/l2switch/loopremover/topology/NetworkGraphImpl.java">
+</file>
+<file name="/opt/git/l2switch/loopremover/implementation/src/main/java/org/opendaylight/l2switch/loopremover/LoopRemoverProvider.java">
+</file>
+<file name="/opt/git/l2switch/loopremover/implementation/src/main/java/org/opendaylight/l2switch/loopremover/flow/InitialFlowWriter.java">
+</file>
+<file name="/opt/git/l2switch/loopremover/pom.xml">
+</file>
+</checkstyle>

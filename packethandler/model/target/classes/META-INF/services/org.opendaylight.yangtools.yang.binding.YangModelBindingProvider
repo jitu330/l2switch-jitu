@@ -1,0 +1,6 @@
+org.opendaylight.yang.gen.v1.urn.opendaylight.packet.ethernet.rev140528.$YangModelBindingProvider
+org.opendaylight.yang.gen.v1.urn.opendaylight.packet.ipv6.rev140528.$YangModelBindingProvider
+org.opendaylight.yang.gen.v1.urn.opendaylight.packet.icmp.rev140528.$YangModelBindingProvider
+org.opendaylight.yang.gen.v1.urn.opendaylight.packet.ipv4.rev140528.$YangModelBindingProvider
+org.opendaylight.yang.gen.v1.urn.opendaylight.packet.basepacket.rev140528.$YangModelBindingProvider
+org.opendaylight.yang.gen.v1.urn.opendaylight.packet.arp.rev140528.$YangModelBindingProvider

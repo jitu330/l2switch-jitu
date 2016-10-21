@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="6.16">
+<file name="/opt/git/l2switch/addresstracker/model/pom.xml">
+</file>
+<file name="/opt/git/l2switch/addresstracker/model/src/main/yang/address-tracker.yang">
+</file>
+</checkstyle>

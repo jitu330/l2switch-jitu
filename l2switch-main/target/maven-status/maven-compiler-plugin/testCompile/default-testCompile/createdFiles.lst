@@ -1,0 +1,5 @@
+org/opendaylight/l2switch/flow/FlowWriterServiceImplTest.class
+org/opendaylight/l2switch/util/InstanceIdentifierUtilsTest.class
+org/opendaylight/l2switch/flow/InitialFlowWriterTest.class
+org/opendaylight/l2switch/flow/InventoryReaderTest.class
+org/opendaylight/l2switch/flow/ReactiveFlowWriterTest.class

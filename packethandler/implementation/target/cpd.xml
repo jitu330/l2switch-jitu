@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmd-cpd>
+   <duplication lines="29" tokens="124">
+      <file line="114"
+            path="/opt/git/l2switch/packethandler/implementation/src/main/java/org/opendaylight/l2switch/packethandler/decoders/ArpDecoder.java"/>
+      <file line="119"
+            path="/opt/git/l2switch/packethandler/implementation/src/main/java/org/opendaylight/l2switch/packethandler/decoders/Ipv4Decoder.java"/>
+      <file line="121"
+            path="/opt/git/l2switch/packethandler/implementation/src/main/java/org/opendaylight/l2switch/packethandler/decoders/Ipv6Decoder.java"/>
+      <codefragment><![CDATA[        return arpReceivedBuilder.build();
+    }
+
+    @Override
+    public NotificationListener getConsumedNotificationListener() {
+        return this;
+    }
+
+    @Override
+    public void onEthernetPacketReceived(EthernetPacketReceived notification) {
+        decodeAndPublish(notification);
+    }
+
+    @Override
+    public boolean canDecode(EthernetPacketReceived ethernetPacketReceived) {
+        if (ethernetPacketReceived == null || ethernetPacketReceived.getPacketChain() == null)
+            return false;
+
+        // Only decode the latest packet in the chain
+        EthernetPacket ethernetPacket = null;
+        if (!ethernetPacketReceived.getPacketChain().isEmpty()) {
+            Packet packet = ethernetPacketReceived.getPacketChain()
+                    .get(ethernetPacketReceived.getPacketChain().size() - 1).getPacket();
+            if (packet instanceof EthernetPacket) {
+                ethernetPacket = (EthernetPacket) packet;
+            }
+        }
+
+        return ethernetPacket != null && KnownEtherType.Arp.equals(ethernetPacket.getEthertype());]]></codefragment>
+   </duplication>
+</pmd-cpd>

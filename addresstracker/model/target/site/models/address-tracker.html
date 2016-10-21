@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>address-tracker</title>
+  </head>
+  <body>
+    <h1>address-tracker</h1>
+    
+    <h2>Base Information</h2>
+    <table>
+        <tr>
+            <td><strong>prefix</strong></td>
+            <td>address-tracker</td>
+        </tr>
+        <tr>
+            <td><strong>namespace</strong></td>
+            <td>urn:opendaylight:address-tracker</td>
+        </tr>
+        <tr>
+            <td><strong>revision</strong></td>
+            <td>2014-06-17</td>
+        </tr>
+        <tr>
+            <td><strong>description</strong></td>
+            <td>Address Tracker Data Model</td>
+        </tr>
+        <tr>
+            <td><strong>yang-version</strong></td>
+            <td>1</td>
+        </tr>
+        <tr>
+    <td><strong>imports</strong></td><td>        yang:ietf-yang-types 2013-07-15;
+            inv:opendaylight-inventory 2013-08-19;
+            ethernet:ethernet-packet 2014-05-28;
+            ext:yang-ext 2013-07-09;
+            inet:ietf-inet-types 2013-07-15;
+    </td>    </tr>
+    </table>
+    
+    <h3>Groupings Summary</h3>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>
+            <a href="#address-node-connector"><strong>address-node-connector</strong></a>
+            </td>
+            <td>
+            </td>
+        </tr>
+    </table>
+    <h3>Augmentations Summary</h3>
+    <table>
+        <tr>
+            <th>Target</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>
+            <a href="#/opendaylight-inventory:nodes/opendaylight-inventory:node/opendaylight-inventory:node-connector/"><strong>/opendaylight-inventory:nodes/opendaylight-inventory:node/opendaylight-inventory:node-connector/</strong></a>
+            </td>
+            <td>
+            </td>
+        </tr>
+    </table>
+    
+    
+    
+    <h2>Groupings</h2>
+    <ul>
+    <li>
+        <h3 id="address-node-connector">address-node-connector</h3>
+        <ul>
+            <ul>
+            <strong>
+            <li id="address-node-connector/addresses">
+                list: addresses
+            </li>
+            </strong>
+            <ul>
+            <li>
+                key definition: id
+            </li>
+            </ul>
+            <ul>
+            </ul>
+            <ul>
+            </ul>
+            <ul>
+            </ul>
+            <ul>
+            <ul>
+            <strong><li>
+                leaf: id
+            </li>
+            </strong>
+            <ul>
+            <li>
+                description: A 64-bit key for this observation. This is opaque and should not be interpreted.
+            </li>
+            <li>
+                type: (urn:ietf:params:xml:ns:yang:1)uint64
+            </li>
+            </ul>
+            </ul>
+            <ul>
+            <strong><li>
+                leaf: mac
+            </li>
+            </strong>
+            <ul>
+            <li>
+                description: MAC address
+            </li>
+            <li>
+                type: (urn:ietf:params:xml:ns:yang:ietf-yang-types)mac-address
+            </li>
+            </ul>
+            </ul>
+            <ul>
+            <strong><li>
+                leaf: ip
+            </li>
+            </strong>
+            <ul>
+            <li>
+                description: IPv4 or IPv6 address
+            </li>
+            <li>
+                type: (urn:ietf:params:xml:ns:yang:ietf-inet-types)ip-address
+            </li>
+            </ul>
+            </ul>
+            <ul>
+            <strong><li>
+                leaf: vlan
+            </li>
+            </strong>
+            <ul>
+            <li>
+                description: VLAN id
+            </li>
+            <li>
+                type: (urn:opendaylight:packet:ethernet)vlan-id
+            </li>
+            </ul>
+            </ul>
+            <ul>
+            <strong><li>
+                leaf: first-seen
+            </li>
+            </strong>
+            <ul>
+            <li>
+                description: Timestamp (number of ms since January 1, 1970, 00:00:00 GMT) of observing this address for the first time
+            </li>
+            <li>
+                type: (urn:ietf:params:xml:ns:yang:1)int64
+            </li>
+            </ul>
+            </ul>
+            <ul>
+            <strong><li>
+                leaf: last-seen
+            </li>
+            </strong>
+            <ul>
+            <li>
+                description: The most recent timestamp (tnumber of ms since January 1, 1970, 00:00:00 GMT) of observing this address
+            </li>
+            <li>
+                type: (urn:ietf:params:xml:ns:yang:1)int64
+            </li>
+            </ul>
+            </ul>
+            </ul>
+            </ul>
+        </ul>
+    </li>
+    </ul>
+    
+    
+    
+    
+    <h2>Augmentations</h2>
+    
+    <ul>
+    <li>
+        <h3 id="/opendaylight-inventory:nodes/opendaylight-inventory:node/opendaylight-inventory:node-connector/">
+        Target [(urn:opendaylight:inventory)/opendaylight-inventory:nodes/opendaylight-inventory:node/opendaylight-inventory:node-connector/]</h3>
+            Status: <strong>CURRENT</strong>
+        <ul>
+        <strong>
+        <li id="nodes/node/node-connector/addresses">
+            list: addresses
+        </li>
+        </strong>
+        <ul>
+        <li>
+            key definition: id
+        </li>
+        </ul>
+        <ul>
+        </ul>
+        <ul>
+        </ul>
+        <ul>
+        </ul>
+        <ul>
+        <ul>
+        <strong><li>
+            leaf: id
+        </li>
+        </strong>
+        <ul>
+        <li>
+            description: A 64-bit key for this observation. This is opaque and should not be interpreted.
+        </li>
+        <li>
+            type: (urn:ietf:params:xml:ns:yang:1)uint64
+        </li>
+        </ul>
+        </ul>
+        <ul>
+        <strong><li>
+            leaf: mac
+        </li>
+        </strong>
+        <ul>
+        <li>
+            description: MAC address
+        </li>
+        <li>
+            type: (urn:ietf:params:xml:ns:yang:ietf-yang-types)mac-address
+        </li>
+        </ul>
+        </ul>
+        <ul>
+        <strong><li>
+            leaf: ip
+        </li>
+        </strong>
+        <ul>
+        <li>
+            description: IPv4 or IPv6 address
+        </li>
+        <li>
+            type: (urn:ietf:params:xml:ns:yang:ietf-inet-types)ip-address
+        </li>
+        </ul>
+        </ul>
+        <ul>
+        <strong><li>
+            leaf: vlan
+        </li>
+        </strong>
+        <ul>
+        <li>
+            description: VLAN id
+        </li>
+        <li>
+            type: (urn:opendaylight:packet:ethernet)vlan-id
+        </li>
+        </ul>
+        </ul>
+        <ul>
+        <strong><li>
+            leaf: first-seen
+        </li>
+        </strong>
+        <ul>
+        <li>
+            description: Timestamp (number of ms since January 1, 1970, 00:00:00 GMT) of observing this address for the first time
+        </li>
+        <li>
+            type: (urn:ietf:params:xml:ns:yang:1)int64
+        </li>
+        </ul>
+        </ul>
+        <ul>
+        <strong><li>
+            leaf: last-seen
+        </li>
+        </strong>
+        <ul>
+        <li>
+            description: The most recent timestamp (tnumber of ms since January 1, 1970, 00:00:00 GMT) of observing this address
+        </li>
+        <li>
+            type: (urn:ietf:params:xml:ns:yang:1)int64
+        </li>
+        </ul>
+        </ul>
+        </ul>
+        </ul>
+        
+        <h3>Example</h3>
+        <pre>
+        &lt;node-connector xmlns="urn:opendaylight:inventory"&gt;
+            &lt;id&gt;. . .&lt;/id&gt;
+            &lt;addresses&gt;
+                &lt;id&gt;. . .&lt;/id&gt;
+                &lt;mac&gt;. . .&lt;/mac&gt;
+                &lt;ip&gt;. . .&lt;/ip&gt;
+                &lt;vlan&gt;. . .&lt;/vlan&gt;
+                &lt;first-seen&gt;. . .&lt;/first-seen&gt;
+                &lt;last-seen&gt;. . .&lt;/last-seen&gt;
+            &lt;/addresses&gt;
+            &lt;name&gt;. . .&lt;/name&gt;
+            &lt;state xmlns="urn:opendaylight:flow:inventory"&gt;
+                &lt;link-down&gt;. . .&lt;/link-down&gt;
+                &lt;blocked&gt;. . .&lt;/blocked&gt;
+                &lt;live&gt;. . .&lt;/live&gt;
+            &lt;/state&gt;
+            &lt;current-feature&gt;. . .&lt;/current-feature&gt;
+            &lt;supported&gt;. . .&lt;/supported&gt;
+            &lt;peer-features&gt;. . .&lt;/peer-features&gt;
+            &lt;current-speed&gt;. . .&lt;/current-speed&gt;
+            &lt;maximum-speed&gt;. . .&lt;/maximum-speed&gt;
+            &lt;port-number&gt;. . .&lt;/port-number&gt;
+            &lt;hardware-address&gt;. . .&lt;/hardware-address&gt;
+            &lt;configuration&gt;. . .&lt;/configuration&gt;
+            &lt;advertised-features&gt;. . .&lt;/advertised-features&gt;
+            &lt;queue xmlns="urn:opendaylight:flow:inventory"&gt;
+                &lt;queue-id&gt;. . .&lt;/queue-id&gt;
+                &lt;port&gt;. . .&lt;/port&gt;
+                &lt;property&gt;. . .&lt;/property&gt;
+            &lt;/queue&gt;
+        &lt;/node-connector&gt;
+        </pre>
+    </li>
+    </ul>
+    
+    
+    
+    
+  </body>
+</html>
