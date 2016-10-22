@@ -97,13 +97,15 @@ public class CustomFlowWriter {
         this.flowHardTimeout = flowHardTimeout;
     }
 
-/*    public ListenerRegistration<DataChangeListener> registerAsDataChangeListener(DataBroker dataBroker) {
+    //Jitu: Should not be uncommented
+    /*public ListenerRegistration<DataChangeListener> registerAsDataChangeListener(DataBroker dataBroker) {
         InstanceIdentifier<Node> nodeInstanceIdentifier = InstanceIdentifier.builder(Nodes.class)
                 .child(Node.class).build();
 
         return dataBroker.registerDataChangeListener(LogicalDatastoreType.OPERATIONAL, nodeInstanceIdentifier, this, AsyncDataBroker.DataChangeScope.BASE);
     }*/
 
+    //Jitu: Should not be uncommented
     /*@Override
     public void onDataChanged(AsyncDataChangeEvent<InstanceIdentifier<?>, DataObject> instanceIdentifierDataObjectAsyncDataChangeEvent) {
         Map<InstanceIdentifier<?>, DataObject> createdData = instanceIdentifierDataObjectAsyncDataChangeEvent.getCreatedData();
@@ -115,11 +117,13 @@ public class CustomFlowWriter {
         }
     }*/
 
+
+
     /**
      * A private class to process the node updated event in separate thread. Allows to release the
      * thread that invoked the data node updated event. Avoids any thread lock it may cause.
      */
-    /*private class InitialFlowWriterProcessor implements Runnable {
+    private class InitialFlowWriterProcessor implements Runnable {
         Set<InstanceIdentifier<?>> nodeIds = null;
 
         public InitialFlowWriterProcessor(Set<InstanceIdentifier<?>> nodeIds) {
@@ -144,10 +148,10 @@ public class CustomFlowWriter {
 
         }
 
-        *//**
+        /*
          * Adds a flow, which sends all LLDP packets to the controller, to the specified node.
          * @param nodeId The node to write the flow on.
-         *//*
+        */
         public void addInitialFlows(InstanceIdentifier<Node> nodeId) {
             LOG.debug("adding initial flows for node {} ", nodeId);
 
@@ -248,5 +252,5 @@ public class CustomFlowWriter {
             builder.setTransactionUri(new Uri(flow.getId().getValue()));
             return salFlowService.addFlow(builder.build());
         }
-    }*/
+    }
 }

@@ -74,8 +74,8 @@ public class NetworkGraphImpl implements NetworkGraphService {
         if(shortestPath == null) { 
         	shortestPath = new DijkstraShortestPath<>(networkGraph);
        	} 
-	else { 
-		shortestPath.reset();
+	    else {
+		    shortestPath.reset();
         }
         
     }

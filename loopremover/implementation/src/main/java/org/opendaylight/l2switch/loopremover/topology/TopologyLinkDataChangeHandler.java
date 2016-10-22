@@ -27,7 +27,11 @@ import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.AsyncDataChangeEvent;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.l2switch.loopremover.util.InstanceIdentifierUtils;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.address.Address;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.address.tracker.rev140617.address.node.connector.Addresses;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.service.rev130819.SalFlowService;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.host.tracker.rev140624.HostNode;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.host.tracker.rev140624.host.AttachmentPoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorRef;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.node.NodeConnector;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.node.NodeConnectorBuilder;
@@ -72,7 +76,7 @@ public class TopologyLinkDataChangeHandler implements DataChangeListener {
     private String topologyId;
 
     private final DataBroker dataBroker;
-    
+
     private final SalFlowService salFlowService;
 
     public TopologyLinkDataChangeHandler(DataBroker dataBroker, NetworkGraphService networkGraphService,
@@ -125,9 +129,9 @@ public class TopologyLinkDataChangeHandler implements DataChangeListener {
         if (dataChangeEvent == null) {
             return;
         }
-        
+
         LOG.info("Jitu: onDataChanged in TopologyLinkDataChangeHandler");
-        
+
         Map<InstanceIdentifier<?>, DataObject> createdData = dataChangeEvent.getCreatedData();
         Set<InstanceIdentifier<?>> removedPaths = dataChangeEvent.getRemovedPaths();
         Map<InstanceIdentifier<?>, DataObject> originalData = dataChangeEvent.getOriginalData();
@@ -151,47 +155,47 @@ public class TopologyLinkDataChangeHandler implements DataChangeListener {
 
             //Added by Jitu 
             LOG.info("CustomLog: TopologyLinkDataChangeHandler: onDataChanged: links are removed");
-        	
+
             for (InstanceIdentifier<?> instanceId : removedPaths) {
                 if (Link.class.isAssignableFrom(instanceId.getTargetType())) {
                     Link link = (Link) originalData.get(instanceId);
-                                        
+
                     if (!(link.getLinkId().getValue().contains("host"))) {
                         isGraphUpdated = true;
-                        
+
                         //Added by Jitu 
-                        
+
                         NodeId sourceNodeId = link.getSource().getSourceNode();
                         NodeId destinationNodeId = link.getDestination().getDestNode();
-                        
+
                         LOG.info("CustomLog: TopologyLinkDataChangeHandler: onDataChanged: Graph is updated! "
-                        		+ "Removed Link {}, between sourceID {} and targetID {}", 
-                        		link.getLinkId().getValue(), sourceNodeId, destinationNodeId);                    
-                        
+                        		+ "Removed Link {}, between sourceID {} and targetID {}",
+                        		link.getLinkId().getValue(), sourceNodeId, destinationNodeId);
+
                         LOG.debug("Graph is updated! Removed Link {}", link.getLinkId().getValue());
-                        
+
                         List<Node> hostNodes = getHostsFromTopology();
-                        
+
                         if(hostNodes == null || hostNodes.isEmpty())
                         	LOG.info("CustomLog: TopologyLinkDataChangeHandler: onDataChanged: no host nodes found");
                         else{
                         	LOG.info("CustomLog: TopologyLinkDataChangeHandler: onDataChanged: host nodes found");
-                        	
+
                         	for(Node host: hostNodes)
                         		LOG.info("CustomLog: TopologyLinkDataChangeHandler: onDataChanged: host node {} ", host.getNodeId().getValue());
-                        	
+
                         	//LOG.info("CustomLog: TopologyLinkDataChangeHandler: onDataChanged: Initiating NetworkGraphImpl");
                             	//NetworkGraphImpl networkGraphImpl = new NetworkGraphImpl();
 
                             	LOG.info("CustomLog: TopologyLinkDataChangeHandler: onDataChanged: Finding shortestPath");
                             	List<Link> spLinks = networkGraphService.getPath(hostNodes.get(0).getNodeId(), hostNodes.get(1).getNodeId());
-                            
+
                             	LOG.info("CustomLog: TopologyLinkDataChangeHandler: onDataChanged: shortestPath found");
-                            
+
                             	for(Link spLink: spLinks)
                             		LOG.info("CustomLog: TopologyLinkDataChangeHandler: onDataChanged: "
-                            			+ "shortestPath linkID {}, sourceID {}, destinationID {}", 
-                            			spLink.getLinkId(), 
+                            			+ "shortestPath linkID {}, sourceID {}, destinationID {}",
+                            			spLink.getLinkId(),
                             			spLink.getSource().getSourceNode().getValue(),
                                     	spLink.getDestination().getDestNode().getValue());
                         }
@@ -221,20 +225,16 @@ public class TopologyLinkDataChangeHandler implements DataChangeListener {
                         	Destination destinationNode = spLink.getDestination();
                         	
                         	LOG.info("CustomLog: TopologyLinkDataChangeHandler: onDataChanged: sourceID");
-                        	
-                        	
                         }*/
-                        
-                        
-                        break;
+                break;
                     }
                 }
             }
-            
-            
-            
-            
-            
+
+
+
+
+
         }
 
         if (!isGraphUpdated) {
@@ -254,8 +254,8 @@ public class TopologyLinkDataChangeHandler implements DataChangeListener {
             threadReschedule = true;
         }
     }
-    
-    
+
+
     private List<Node> getHostsFromTopology() {
         InstanceIdentifier<Topology> topologyInstanceIdentifier = InstanceIdentifierUtils
                 .generateTopologyInstanceIdentifier(topologyId);
@@ -276,18 +276,41 @@ public class TopologyLinkDataChangeHandler implements DataChangeListener {
         readOnlyTransaction.close();
         if (topology == null) {
             return null;
-        }            
-        
+        }
+
         List<Node> nodes = topology.getNode();
         if (nodes == null || nodes.isEmpty()) {
             return null;
         }
-        
+
         List<Node> hostNodes = new ArrayList<Node>();
-        for (Node node : nodes) 
+        for (Node node : nodes)
         	if(node.getNodeId().getValue().contains("host"))
         		hostNodes.add(node);
-        
+
+        for (Node node : nodes) {
+            HostNode hostNode = node.getAugmentation(HostNode.class);
+
+            LOG.info("CustomLog: TopologyLinkDataChangeHandler: getHostsFromTopology: "
+                            + "hostNode id {}", hostNode.getId());
+
+            List<Addresses> hnAddresses = hostNode.getAddresses();
+
+            for(Addresses addresses : hnAddresses){
+                LOG.info("CustomLog: TopologyLinkDataChangeHandler: getHostsFromTopology: "
+                        + "hostNode address IP {}, MAC {}", addresses.getIp(), addresses.getMac());
+
+            }
+
+            List<AttachmentPoints> hnAttPoints = hostNode.getAttachmentPoints();
+
+            for(AttachmentPoints attPoints: hnAttPoints){
+                LOG.info("CustomLog: TopologyLinkDataChangeHandler: getHostsFromTopology: "
+                        + "attPoints Tp {}, isActive {}", attPoints.getCorrespondingTp().getValue(),
+                        attPoints.isActive());
+            }
+        }
+
         return hostNodes;
     }
 
@@ -303,10 +326,10 @@ public class TopologyLinkDataChangeHandler implements DataChangeListener {
                 threadReschedule = false;
                 return;
             }
-            
-            //Added by Jitu 
+
+            //Added by Jitu
             LOG.info("CustomLog: TopologyLinkDataChangeHandler: TopologyDataChangeEventProcessor: In network graph refresh thread.");
-            
+
             LOG.debug("In network graph refresh thread.");
             networkGraphRefreshScheduled = false;
             networkGraphService.clear();
@@ -316,20 +339,20 @@ public class TopologyLinkDataChangeHandler implements DataChangeListener {
             }
             networkGraphService.addLinks(links);
 
-            //Added by Jitu 
+            //Added by Jitu
             LOG.info("CustomLog: TopologyLinkDataChangeHandler: TopologyDataChangeEventProcessor: Links Added using networkGraphService");
 
-            
+
             final ReadWriteTransaction readWriteTransaction = dataBroker.newReadWriteTransaction();
             updateNodeConnectorStatus(readWriteTransaction);
             final CheckedFuture writeTxResultFuture = readWriteTransaction.submit();
             Futures.addCallback(writeTxResultFuture, new FutureCallback() {
                 @Override
                 public void onSuccess(Object o) {
-                	
-                    //Added by Jitu 
+
+                    //Added by Jitu
                     LOG.info("CustomLog: TopologyLinkDataChangeHandler: TopologyDataChangeEventProcessor: write successful for tx :{}", readWriteTransaction.getIdentifier());
-                	
+
                     LOG.debug("TopologyLinkDataChangeHandler write successful for tx :{}",
                             readWriteTransaction.getIdentifier());
                 }
@@ -340,10 +363,10 @@ public class TopologyLinkDataChangeHandler implements DataChangeListener {
                             readWriteTransaction.getIdentifier(), throwable.getCause());
                 }
             });
-            
+
             //Added by Jitu 
             LOG.info("CustomLog: TopologyLinkDataChangeHandler: TopologyDataChangeEventProcessor: Done with network graph refresh thread.");
-            
+
             LOG.debug("Done with network graph refresh thread.");
         }
 
@@ -380,9 +403,9 @@ public class TopologyLinkDataChangeHandler implements DataChangeListener {
             }
             return internalLinks;
         }
-        
-        
-        
+
+
+
 
         /**
          * @param readWriteTransaction
