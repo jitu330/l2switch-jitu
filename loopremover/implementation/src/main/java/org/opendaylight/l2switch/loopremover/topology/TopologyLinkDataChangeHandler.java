@@ -12,10 +12,8 @@ import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -179,25 +177,40 @@ public class TopologyLinkDataChangeHandler implements DataChangeListener {
                         if(hostNodes == null || hostNodes.isEmpty())
                         	LOG.info("CustomLog: TopologyLinkDataChangeHandler: onDataChanged: no host nodes found");
                         else{
-                        	LOG.info("CustomLog: TopologyLinkDataChangeHandler: onDataChanged: host nodes found");
 
-                        	for(Node host: hostNodes)
-                        		LOG.info("CustomLog: TopologyLinkDataChangeHandler: onDataChanged: host node {} ", host.getNodeId().getValue());
+                            LOG.info("CustomLog: TopologyLinkDataChangeHandler: onDataChanged: host nodes found");
 
-                        	//LOG.info("CustomLog: TopologyLinkDataChangeHandler: onDataChanged: Initiating NetworkGraphImpl");
-                            	//NetworkGraphImpl networkGraphImpl = new NetworkGraphImpl();
 
-                            	LOG.info("CustomLog: TopologyLinkDataChangeHandler: onDataChanged: Finding shortestPath");
-                            	List<Link> spLinks = networkGraphService.getPath(hostNodes.get(0).getNodeId(), hostNodes.get(1).getNodeId());
 
-                            	LOG.info("CustomLog: TopologyLinkDataChangeHandler: onDataChanged: shortestPath found");
+                            HashMap<String, HashMap<String, String>> hNodes = new HashMap<String, HashMap<String, String>>();
 
-                            	for(Link spLink: spLinks)
-                            		LOG.info("CustomLog: TopologyLinkDataChangeHandler: onDataChanged: "
-                            			+ "shortestPath linkID {}, sourceID {}, destinationID {}",
-                            			spLink.getLinkId(),
-                            			spLink.getSource().getSourceNode().getValue(),
-                                    	spLink.getDestination().getDestNode().getValue());
+                            for(Node n: hostNodes){
+                                HostNode hNode = n.getAugmentation(HostNode.class);
+                                HashMap<String, String> hNodeDetails = new HashMap<String, String>();
+
+                                hNodeDetails.put("ip", hNode.getAddresses().get(0).getIp().toString());
+                                hNodeDetails.put("mac", hNode.getAddresses().get(0).getMac().toString());
+                                //Hardcoding as I know how the tp-id name looks like :-)
+                                hNodeDetails.put("switchId", hNode.getAttachmentPoints().get(0).getTpId().toString().substring(0, 9));
+                                hNodeDetails.put("switchPort", hNode.getAttachmentPoints().get(0).getTpId().toString().substring(11));
+
+                                hNodes.put(hNode.getId().getValue(), hNodeDetails);
+                            }
+
+                            //Print host nodes information
+                            printHostNodesInformation(hNodes);
+
+                            /*LOG.info("CustomLog: TopologyLinkDataChangeHandler: onDataChanged: Finding shortestPath");
+                            List<Link> spLinks = networkGraphService.getPath(hostNodes.get(0).getNodeId(), hostNodes.get(1).getNodeId());
+
+                            LOG.info("CustomLog: TopologyLinkDataChangeHandler: onDataChanged: shortestPath found");
+
+                            for(Link spLink: spLinks)
+                                LOG.info("CustomLog: TopologyLinkDataChangeHandler: onDataChanged: "
+                                    + "shortestPath linkID {}, sourceID {}, destinationID {}",
+                                    spLink.getLinkId(),
+                                    spLink.getSource().getSourceNode().getValue(),
+                                    spLink.getDestination().getDestNode().getValue());*/
                         }
                         
                         
@@ -255,6 +268,20 @@ public class TopologyLinkDataChangeHandler implements DataChangeListener {
         }
     }
 
+    private void printHostNodesInformation(HashMap<String, HashMap<String, String>> hNodes){
+        LOG.info("CustomLog: TopologyLinkDataChangeHandler: printHostNodesInformation");
+
+        for(String hNode: hNodes.keySet()){
+
+            LOG.info("CustomLog: TopologyLinkDataChangeHandler: printHostNodesInformation" +
+                    "hostNodeId {}", hNode);
+
+            for(String hNodeDetails: hNodes.get(hNode).keySet())
+                LOG.info("CustomLog: TopologyLinkDataChangeHandler: printHostNodesInformation" +
+                        " {} = {}", hNodeDetails, hNodes.get(hNode).get(hNodeDetails));
+        }
+
+    }
 
     private List<Node> getHostsFromTopology() {
         InstanceIdentifier<Topology> topologyInstanceIdentifier = InstanceIdentifierUtils
@@ -278,38 +305,273 @@ public class TopologyLinkDataChangeHandler implements DataChangeListener {
             return null;
         }
 
+        //Geting nodes from topology
         List<Node> nodes = topology.getNode();
         if (nodes == null || nodes.isEmpty()) {
             return null;
         }
 
         List<Node> hostNodes = new ArrayList<Node>();
-        for (Node node : nodes)
-        	if(node.getNodeId().getValue().contains("host"))
-        		hostNodes.add(node);
 
         for (Node node : nodes) {
+            /*if (node.getNodeId().getValue().contains("host"))
+                hostNodes.add(node);*/
+
             HostNode hostNode = node.getAugmentation(HostNode.class);
 
-            LOG.info("CustomLog: TopologyLinkDataChangeHandler: getHostsFromTopology: "
-                            + "hostNode id {}", hostNode.getId());
 
-            List<Addresses> hnAddresses = hostNode.getAddresses();
-
-            for(Addresses addresses : hnAddresses){
-                LOG.info("CustomLog: TopologyLinkDataChangeHandler: getHostsFromTopology: "
-                        + "hostNode address IP {}, MAC {}", addresses.getIp(), addresses.getMac());
-
-            }
-
-            List<AttachmentPoints> hnAttPoints = hostNode.getAttachmentPoints();
-
-            for(AttachmentPoints attPoints: hnAttPoints){
-                LOG.info("CustomLog: TopologyLinkDataChangeHandler: getHostsFromTopology: "
-                        + "attPoints Tp {}, isActive {}", attPoints.getCorrespondingTp().getValue(),
-                        attPoints.isActive());
+            /*
+            CustomLog: TopologyLinkDataChangeHandler: getHostsFromTopology: hostNode id HostId [_value=00:00:00:00:00:01]
+            CustomLog: TopologyLinkDataChangeHandler: getHostsFromTopology: hostNode address IP IpAddress [_ipv4Address=Ipv4Address [_value=10.0.0.1]], MAC MacAddress [_value=00:00:00:00:00:01]
+            CustomLog: TopologyLinkDataChangeHandler: getHostsFromTopology: attPoints Tp host:00:00:00:00:00:01, isActive true
+            CustomLog: TopologyLinkDataChangeHandler: getHostsFromTopology: hostNode id HostId [_value=00:00:00:00:00:02]
+            CustomLog: TopologyLinkDataChangeHandler: getHostsFromTopology: hostNode address IP IpAddress [_ipv4Address=Ipv4Address [_value=10.0.0.2]], MAC MacAddress [_value=00:00:00:00:00:02]
+            CustomLog: TopologyLinkDataChangeHandler: getHostsFromTopology: attPoints Tp host:00:00:00:00:00:02, isActive true
+            {
+            "network-topology": {
+                "topology": [
+                    {
+                        "topology-id": "flow:1",
+                        "node": [
+                            {
+                                "node-id": "openflow:2",
+                                "termination-point": [
+                                    {
+                                        "tp-id": "openflow:2:LOCAL",
+                                        "opendaylight-topology-inventory:inventory-node-connector-ref": "/opendaylight-inventory:nodes/opendaylight-inventory:node[opendaylight-inventory:id='openflow:2']/opendaylight-inventory:node-connector[opendaylight-inventory:id='openflow:2:LOCAL']"
+                                    },
+                                    {
+                                        "tp-id": "openflow:2:1",
+                                        "opendaylight-topology-inventory:inventory-node-connector-ref": "/opendaylight-inventory:nodes/opendaylight-inventory:node[opendaylight-inventory:id='openflow:2']/opendaylight-inventory:node-connector[opendaylight-inventory:id='openflow:2:1']"
+                                    },
+                                    {
+                                        "tp-id": "openflow:2:3",
+                                        "opendaylight-topology-inventory:inventory-node-connector-ref": "/opendaylight-inventory:nodes/opendaylight-inventory:node[opendaylight-inventory:id='openflow:2']/opendaylight-inventory:node-connector[opendaylight-inventory:id='openflow:2:3']"
+                                    },
+                                    {
+                                        "tp-id": "openflow:2:2",
+                                        "opendaylight-topology-inventory:inventory-node-connector-ref": "/opendaylight-inventory:nodes/opendaylight-inventory:node[opendaylight-inventory:id='openflow:2']/opendaylight-inventory:node-connector[opendaylight-inventory:id='openflow:2:2']"
+                                    }
+                                ],
+                                "opendaylight-topology-inventory:inventory-node-ref": "/opendaylight-inventory:nodes/opendaylight-inventory:node[opendaylight-inventory:id='openflow:2']"
+                            },
+                            {
+                                "node-id": "host:00:00:00:00:00:01",
+                                "termination-point": [
+                                    {
+                                        "tp-id": "host:00:00:00:00:00:01"
+                                    }
+                                ],
+                                "host-tracker-service:id": "00:00:00:00:00:01",
+                                "host-tracker-service:addresses": [
+                                    {
+                                        "id": 0,
+                                        "ip": "10.0.0.1",
+                                        "mac": "00:00:00:00:00:01",
+                                        "first-seen": 1477163711143,
+                                        "last-seen": 1477163711143
+                                    }
+                                ],
+                                "host-tracker-service:attachment-points": [
+                                    {
+                                        "tp-id": "openflow:1:3",
+                                        "corresponding-tp": "host:00:00:00:00:00:01",
+                                        "active": true
+                                    }
+                                ]
+                            },
+                            {
+                                "node-id": "openflow:1",
+                                "termination-point": [
+                                    {
+                                        "tp-id": "openflow:1:2",
+                                        "opendaylight-topology-inventory:inventory-node-connector-ref": "/opendaylight-inventory:nodes/opendaylight-inventory:node[opendaylight-inventory:id='openflow:1']/opendaylight-inventory:node-connector[opendaylight-inventory:id='openflow:1:2']"
+                                    },
+                                    {
+                                        "tp-id": "openflow:1:1",
+                                        "opendaylight-topology-inventory:inventory-node-connector-ref": "/opendaylight-inventory:nodes/opendaylight-inventory:node[opendaylight-inventory:id='openflow:1']/opendaylight-inventory:node-connector[opendaylight-inventory:id='openflow:1:1']"
+                                    },
+                                    {
+                                        "tp-id": "openflow:1:LOCAL",
+                                        "opendaylight-topology-inventory:inventory-node-connector-ref": "/opendaylight-inventory:nodes/opendaylight-inventory:node[opendaylight-inventory:id='openflow:1']/opendaylight-inventory:node-connector[opendaylight-inventory:id='openflow:1:LOCAL']"
+                                    },
+                                    {
+                                        "tp-id": "openflow:1:3",
+                                        "opendaylight-topology-inventory:inventory-node-connector-ref": "/opendaylight-inventory:nodes/opendaylight-inventory:node[opendaylight-inventory:id='openflow:1']/opendaylight-inventory:node-connector[opendaylight-inventory:id='openflow:1:3']"
+                                    }
+                                ],
+                                "opendaylight-topology-inventory:inventory-node-ref": "/opendaylight-inventory:nodes/opendaylight-inventory:node[opendaylight-inventory:id='openflow:1']"
+                            },
+                            {
+                                "node-id": "host:00:00:00:00:00:02",
+                                "termination-point": [
+                                    {
+                                        "tp-id": "host:00:00:00:00:00:02"
+                                    }
+                                ],
+                                "host-tracker-service:id": "00:00:00:00:00:02",
+                                "host-tracker-service:addresses": [
+                                    {
+                                        "id": 3,
+                                        "ip": "10.0.0.2",
+                                        "mac": "00:00:00:00:00:02",
+                                        "first-seen": 1477163711320,
+                                        "last-seen": 1477163711320
+                                    }
+                                ],
+                                "host-tracker-service:attachment-points": [
+                                    {
+                                        "tp-id": "openflow:2:3",
+                                        "corresponding-tp": "host:00:00:00:00:00:02",
+                                        "active": true
+                                    }
+                                ]
+                            },
+                            {
+                                "node-id": "openflow:3",
+                                "termination-point": [
+                                    {
+                                        "tp-id": "openflow:3:LOCAL",
+                                        "opendaylight-topology-inventory:inventory-node-connector-ref": "/opendaylight-inventory:nodes/opendaylight-inventory:node[opendaylight-inventory:id='openflow:3']/opendaylight-inventory:node-connector[opendaylight-inventory:id='openflow:3:LOCAL']"
+                                    },
+                                    {
+                                        "tp-id": "openflow:3:2",
+                                        "opendaylight-topology-inventory:inventory-node-connector-ref": "/opendaylight-inventory:nodes/opendaylight-inventory:node[opendaylight-inventory:id='openflow:3']/opendaylight-inventory:node-connector[opendaylight-inventory:id='openflow:3:2']"
+                                    },
+                                    {
+                                        "tp-id": "openflow:3:1",
+                                        "opendaylight-topology-inventory:inventory-node-connector-ref": "/opendaylight-inventory:nodes/opendaylight-inventory:node[opendaylight-inventory:id='openflow:3']/opendaylight-inventory:node-connector[opendaylight-inventory:id='openflow:3:1']"
+                                    }
+                                ],
+                                "opendaylight-topology-inventory:inventory-node-ref": "/opendaylight-inventory:nodes/opendaylight-inventory:node[opendaylight-inventory:id='openflow:3']"
+                            }
+                        ],
+                        "link": [
+                            {
+                                "link-id": "openflow:1:2",
+                                "destination": {
+                                    "dest-tp": "openflow:3:2",
+                                    "dest-node": "openflow:3"
+                                },
+                                "source": {
+                                    "source-node": "openflow:1",
+                                    "source-tp": "openflow:1:2"
+                                }
+                            },
+                            {
+                                "link-id": "openflow:2:1",
+                                "destination": {
+                                    "dest-tp": "openflow:1:1",
+                                    "dest-node": "openflow:1"
+                                },
+                                "source": {
+                                    "source-node": "openflow:2",
+                                    "source-tp": "openflow:2:1"
+                                }
+                            },
+                            {
+                                "link-id": "openflow:3:1",
+                                "destination": {
+                                    "dest-tp": "openflow:2:2",
+                                    "dest-node": "openflow:2"
+                                },
+                                "source": {
+                                    "source-node": "openflow:3",
+                                    "source-tp": "openflow:3:1"
+                                }
+                            },
+                            {
+                                "link-id": "openflow:2:2",
+                                "destination": {
+                                    "dest-tp": "openflow:3:1",
+                                    "dest-node": "openflow:3"
+                                },
+                                "source": {
+                                    "source-node": "openflow:2",
+                                    "source-tp": "openflow:2:2"
+                                }
+                            },
+                            {
+                                "link-id": "openflow:3:2",
+                                "destination": {
+                                    "dest-tp": "openflow:1:2",
+                                    "dest-node": "openflow:1"
+                                },
+                                "source": {
+                                    "source-node": "openflow:3",
+                                    "source-tp": "openflow:3:2"
+                                }
+                            },
+                            {
+                                "link-id": "host:00:00:00:00:00:02/openflow:2:3",
+                                "destination": {
+                                    "dest-tp": "openflow:2:3",
+                                    "dest-node": "openflow:2"
+                                },
+                                "source": {
+                                    "source-node": "host:00:00:00:00:00:02",
+                                    "source-tp": "host:00:00:00:00:00:02"
+                                }
+                            },
+                            {
+                                "link-id": "openflow:1:1",
+                                "destination": {
+                                    "dest-tp": "openflow:2:1",
+                                    "dest-node": "openflow:2"
+                                },
+                                "source": {
+                                    "source-node": "openflow:1",
+                                    "source-tp": "openflow:1:1"
+                                }
+                            },
+                            {
+                                "link-id": "openflow:2:3/host:00:00:00:00:00:02",
+                                "destination": {
+                                    "dest-tp": "host:00:00:00:00:00:02",
+                                    "dest-node": "host:00:00:00:00:00:02"
+                                },
+                                "source": {
+                                    "source-node": "openflow:2",
+                                    "source-tp": "openflow:2:3"
+                                }
+                            },
+                            {
+                                "link-id": "host:00:00:00:00:00:01/openflow:1:3",
+                                "destination": {
+                                    "dest-tp": "openflow:1:3",
+                                    "dest-node": "openflow:1"
+                                },
+                                "source": {
+                                    "source-node": "host:00:00:00:00:00:01",
+                                    "source-tp": "host:00:00:00:00:00:01"
+                                }
+                            },
+                            {
+                                "link-id": "openflow:1:3/host:00:00:00:00:00:01",
+                                "destination": {
+                                    "dest-tp": "host:00:00:00:00:00:01",
+                                    "dest-node": "host:00:00:00:00:00:01"
+                                },
+                                "source": {
+                                    "source-node": "openflow:1",
+                                    "source-tp": "openflow:1:3"
+                                }
+                            }
+                        ]
+                    }
+                ]
             }
         }
+
+            */
+
+
+            if(hostNode != null)
+                hostNodes.add(node);
+        }
+
+        //Other stuff from topology
+        //topology
 
         return hostNodes;
     }
