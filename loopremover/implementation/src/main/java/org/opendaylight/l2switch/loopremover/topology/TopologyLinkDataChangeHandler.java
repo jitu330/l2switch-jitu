@@ -9,6 +9,7 @@ package org.opendaylight.l2switch.loopremover.topology;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Iterables;
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
@@ -25,22 +26,21 @@ import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.AsyncDataChangeEvent;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.l2switch.loopremover.util.InstanceIdentifierUtils;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.address.Address;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.address.tracker.rev140617.address.node.connector.Addresses;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.service.rev130819.SalFlowService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.host.tracker.rev140624.HostNode;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.host.tracker.rev140624.host.AttachmentPoints;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorRef;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.node.NodeConnector;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.node.NodeConnectorBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.node.NodeConnectorKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.NodeKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.l2switch.loopremover.rev140714.StpStatus;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.l2switch.loopremover.rev140714.StpStatusAwareNodeConnector;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.l2switch.loopremover.rev140714.StpStatusAwareNodeConnectorBuilder;
-import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NetworkTopology;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NodeId;
+import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NetworkTopology;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.TopologyId;
-import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.link.attributes.Destination;
-import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.link.attributes.Source;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.Topology;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.TopologyKey;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Link;
@@ -161,92 +161,19 @@ public class TopologyLinkDataChangeHandler implements DataChangeListener {
                     if (!(link.getLinkId().getValue().contains("host"))) {
                         isGraphUpdated = true;
 
-                        //Added by Jitu 
-
-                        NodeId sourceNodeId = link.getSource().getSourceNode();
-                        NodeId destinationNodeId = link.getDestination().getDestNode();
-
-                        LOG.info("CustomLog: TopologyLinkDataChangeHandler: onDataChanged: Graph is updated! "
-                        		+ "Removed Link {}, between sourceID {} and targetID {}",
-                        		link.getLinkId().getValue(), sourceNodeId, destinationNodeId);
-
                         LOG.debug("Graph is updated! Removed Link {}", link.getLinkId().getValue());
 
-                        List<Node> hostNodes = getHostsFromTopology();
+                        //Added by Jitu 
+                        LOG.info("CustomLog: TopologyLinkDataChangeHandler: onDataChanged: Graph is updated! "
+                        		+ "Removed Link {}, between sourceID {} and targetID {}",
+                        		link.getLinkId().getValue(),
+                                link.getSource().getSourceNode(),
+                                link.getDestination().getDestNode());
 
-                        if(hostNodes == null || hostNodes.isEmpty())
-                        	LOG.info("CustomLog: TopologyLinkDataChangeHandler: onDataChanged: no host nodes found");
-                        else{
-
-                            LOG.info("CustomLog: TopologyLinkDataChangeHandler: onDataChanged: host nodes found");
-
-
-
-                            HashMap<String, HashMap<String, String>> hNodes = new HashMap<String, HashMap<String, String>>();
-
-                            for(Node n: hostNodes){
-                                HostNode hNode = n.getAugmentation(HostNode.class);
-                                HashMap<String, String> hNodeDetails = new HashMap<String, String>();
-
-                                hNodeDetails.put("ip", hNode.getAddresses().get(0).getIp().toString());
-                                hNodeDetails.put("mac", hNode.getAddresses().get(0).getMac().toString());
-                                //Hardcoding as I know how the tp-id name looks like :-)
-                                hNodeDetails.put("switchId", hNode.getAttachmentPoints().get(0).getTpId().toString().substring(0, 9));
-                                hNodeDetails.put("switchPort", hNode.getAttachmentPoints().get(0).getTpId().toString().substring(11));
-
-                                hNodes.put(hNode.getId().getValue(), hNodeDetails);
-                            }
-
-                            //Print host nodes information
-                            printHostNodesInformation(hNodes);
-
-                            /*LOG.info("CustomLog: TopologyLinkDataChangeHandler: onDataChanged: Finding shortestPath");
-                            List<Link> spLinks = networkGraphService.getPath(hostNodes.get(0).getNodeId(), hostNodes.get(1).getNodeId());
-
-                            LOG.info("CustomLog: TopologyLinkDataChangeHandler: onDataChanged: shortestPath found");
-
-                            for(Link spLink: spLinks)
-                                LOG.info("CustomLog: TopologyLinkDataChangeHandler: onDataChanged: "
-                                    + "shortestPath linkID {}, sourceID {}, destinationID {}",
-                                    spLink.getLinkId(),
-                                    spLink.getSource().getSourceNode().getValue(),
-                                    spLink.getDestination().getDestNode().getValue());*/
-                        }
-                        
-                        
-                        
-                        
-                        /*
-                         {
-                        	"link-id": "openflow:1:1",
-                        	"destination": 
-                        	{
-                            	"dest-tp": "openflow:2:1",
-                            	"dest-node": "openflow:2"
-                        	},
-                        	"source": 
-                        	{
-                            	"source-node": "openflow:1",
-                            	"source-tp": "openflow:1:1"
-                        	}
-                    	 }    
-                    	*/
-                        
-                        
-                        /*for(Link spLink: spLinks){
-                        	Source sourceNode = spLink.getSource();
-                        	Destination destinationNode = spLink.getDestination();
-                        	
-                        	LOG.info("CustomLog: TopologyLinkDataChangeHandler: onDataChanged: sourceID");
-                        }*/
-                break;
+                        break;
                     }
                 }
             }
-
-
-
-
 
         }
 
@@ -267,59 +194,6 @@ public class TopologyLinkDataChangeHandler implements DataChangeListener {
             threadReschedule = true;
         }
     }
-
-    private void printHostNodesInformation(HashMap<String, HashMap<String, String>> hNodes){
-        LOG.info("CustomLog: TopologyLinkDataChangeHandler: printHostNodesInformation");
-
-        for(String hNode: hNodes.keySet()){
-
-            LOG.info("CustomLog: TopologyLinkDataChangeHandler: printHostNodesInformation" +
-                    "hostNodeId {}", hNode);
-
-            for(String hNodeDetails: hNodes.get(hNode).keySet())
-                LOG.info("CustomLog: TopologyLinkDataChangeHandler: printHostNodesInformation" +
-                        " {} = {}", hNodeDetails, hNodes.get(hNode).get(hNodeDetails));
-        }
-
-    }
-
-    private List<Node> getHostsFromTopology() {
-        InstanceIdentifier<Topology> topologyInstanceIdentifier = InstanceIdentifierUtils
-                .generateTopologyInstanceIdentifier(topologyId);
-        Topology topology = null;
-        ReadOnlyTransaction readOnlyTransaction = dataBroker.newReadOnlyTransaction();
-        try {
-            Optional<Topology> topologyOptional = readOnlyTransaction
-                    .read(LogicalDatastoreType.OPERATIONAL, topologyInstanceIdentifier).get();
-            if (topologyOptional.isPresent()) {
-                topology = topologyOptional.get();
-            }
-        } catch (Exception e) {
-            LOG.error("Error reading topology {}", topologyInstanceIdentifier);
-            readOnlyTransaction.close();
-            throw new RuntimeException(
-                    "Error reading from operational store, topology : " + topologyInstanceIdentifier, e);
-        }
-        readOnlyTransaction.close();
-        if (topology == null) {
-            return null;
-        }
-
-        //Geting nodes from topology
-        List<Node> nodes = topology.getNode();
-        if (nodes == null || nodes.isEmpty()) {
-            return null;
-        }
-
-        List<Node> hostNodes = new ArrayList<Node>();
-
-        for (Node node : nodes) {
-            /*if (node.getNodeId().getValue().contains("host"))
-                hostNodes.add(node);*/
-
-            HostNode hostNode = node.getAugmentation(HostNode.class);
-
-
             /*
             CustomLog: TopologyLinkDataChangeHandler: getHostsFromTopology: hostNode id HostId [_value=00:00:00:00:00:01]
             CustomLog: TopologyLinkDataChangeHandler: getHostsFromTopology: hostNode address IP IpAddress [_ipv4Address=Ipv4Address [_value=10.0.0.1]], MAC MacAddress [_value=00:00:00:00:00:01]
@@ -565,17 +439,6 @@ public class TopologyLinkDataChangeHandler implements DataChangeListener {
 
             */
 
-
-            if(hostNode != null)
-                hostNodes.add(node);
-        }
-
-        //Other stuff from topology
-        //topology
-
-        return hostNodes;
-    }
-
     /**
      *
      */
@@ -590,7 +453,7 @@ public class TopologyLinkDataChangeHandler implements DataChangeListener {
             }
 
             //Added by Jitu
-            LOG.info("CustomLog: TopologyLinkDataChangeHandler: TopologyDataChangeEventProcessor: In network graph refresh thread.");
+            LOG.info("CustomLog: TopologyLinkDataChangeHandler: TopologyDataChangeEventProcessor: run: network graph refresh thread.");
 
             LOG.debug("In network graph refresh thread.");
             networkGraphRefreshScheduled = false;
@@ -601,19 +464,12 @@ public class TopologyLinkDataChangeHandler implements DataChangeListener {
             }
             networkGraphService.addLinks(links);
 
-            //Added by Jitu
-            LOG.info("CustomLog: TopologyLinkDataChangeHandler: TopologyDataChangeEventProcessor: Links Added using networkGraphService");
-
-
             final ReadWriteTransaction readWriteTransaction = dataBroker.newReadWriteTransaction();
             updateNodeConnectorStatus(readWriteTransaction);
             final CheckedFuture writeTxResultFuture = readWriteTransaction.submit();
             Futures.addCallback(writeTxResultFuture, new FutureCallback() {
                 @Override
                 public void onSuccess(Object o) {
-
-                    //Added by Jitu
-                    LOG.info("CustomLog: TopologyLinkDataChangeHandler: TopologyDataChangeEventProcessor: write successful for tx :{}", readWriteTransaction.getIdentifier());
 
                     LOG.debug("TopologyLinkDataChangeHandler write successful for tx :{}",
                             readWriteTransaction.getIdentifier());
@@ -627,9 +483,429 @@ public class TopologyLinkDataChangeHandler implements DataChangeListener {
             });
 
             //Added by Jitu 
-            LOG.info("CustomLog: TopologyLinkDataChangeHandler: TopologyDataChangeEventProcessor: Done with network graph refresh thread.");
+            LOG.info("CustomLog: TopologyLinkDataChangeHandler: TopologyDataChangeEventProcessor: run: Done with network graph refresh thread.");
+
+            List<Node> topoNodes = getNodesFromTopology();
+
+            List<HostNode> hostNodes = null;
+            List<Node> switchNodes = null;
+
+            if(topoNodes == null || topoNodes.isEmpty())
+                LOG.info("CustomLog: TopologyLinkDataChangeHandler: TopologyDataChangeEventProcessor: run: no topology nodes found");
+            else {
+
+                LOG.info("CustomLog: TopologyLinkDataChangeHandler: TopologyDataChangeEventProcessor: run: parsing topology nodes");
+
+                hostNodes = new ArrayList<HostNode>();
+                switchNodes = new ArrayList<Node>();
+
+                for (Node tNode : topoNodes) {
+                    LOG.info("CustomLog: TopologyLinkDataChangeHandler: TopologyDataChangeEventProcessor: run: node {} ", tNode.getNodeId().getValue());
+
+                    HostNode hostNode = tNode.getAugmentation(HostNode.class);
+
+                    if (hostNode != null)
+                        hostNodes.add(hostNode);
+                    else
+                        switchNodes.add(tNode);
+                }
+
+                if(hostNodes == null || hostNodes.isEmpty())
+                    LOG.info("CustomLog: TopologyLinkDataChangeHandler: TopologyDataChangeEventProcessor: run: no hosts found");
+                else {
+                    if(switchNodes == null || switchNodes.isEmpty())
+                        LOG.info("CustomLog: TopologyLinkDataChangeHandler: TopologyDataChangeEventProcessor: run: no switch nodes found");
+                    else {
+
+                        LOG.info("CustomLog: TopologyLinkDataChangeHandler: TopologyDataChangeEventProcessor: run: host & switch nodes found");
+
+                        HashMap<HostNode, Node> hNodes = new HashMap<HostNode, Node>();
+
+                        for (HostNode hNode : hostNodes) {
+                            String switchId = hNode.getAttachmentPoints().get(0).getTpId().getValue().substring(0, 10);
+                            LOG.info("CustomLog: TopologyLinkDataChangeHandler: TopologyDataChangeEventProcessor: run: " +
+                                            "hostId {} is attached to switchId {}",
+                                            hNode.getId().getValue(), switchId);
+
+                            for (Node sNode : switchNodes)
+                                if (sNode.getNodeId().getValue().equals(switchId)) {
+                                    LOG.info("CustomLog: TopologyLinkDataChangeHandler: TopologyDataChangeEventProcessor: run: " +
+                                            "switch with ID {} found in list", switchId);
+                                    hNodes.put(hNode, sNode);
+                                }
+                        }
+
+                        if (hNodes == null || hNodes.isEmpty())
+                            LOG.info("CustomLog: TopologyLinkDataChangeHandler: TopologyDataChangeEventProcessor: run: Host/Switch hashMap isEmpty or NULL ");
+                        else {
+                            //Print host nodes information
+                            printHostNodesInformation(hNodes);
+
+                            NodeId srcId = hNodes.get(hostNodes.get(0)).getNodeId();
+                            NodeId destId = hNodes.get(hostNodes.get(1)).getNodeId();
+
+                            LOG.info("CustomLog: TopologyLinkDataChangeHandler: TopologyDataChangeEventProcessor: run: " +
+                                            "Finding shortestPath between {} and {} ", srcId, destId);
+
+                            List<Link> spLinks = networkGraphService.getPath(hNodes.get(hostNodes.get(0)).getNodeId(),
+                                    hNodes.get(hostNodes.get(1)).getNodeId());
+
+                            /*
+                            * NetworkGraphService findPath is not returning all the link between source and destination
+                            * Sometimes the link from the destination is not present in the list of links received
+                            * Hashmap is temporally needed to find out if the same is the case
+                            *//*
+                            //HashMap<String, Link> spLinkMap = new HashMap<String, Link>();
+
+                            *//*
+                            * Custom method written to make sure all the links are returned between
+                            * a srouce and destination
+                            *//*
+                            *//*List<Link> spLinks = findPath(srcId, destId, spLinkMap);*/
+
+                            if (spLinks == null || spLinks.isEmpty())
+                                LOG.info("CustomLog: TopologyLinkDataChangeHandler: TopologyDataChangeEventProcessor: run: shortest path not found");
+                            else {
+
+                                LOG.info("CustomLog: TopologyLinkDataChangeHandler: TopologyDataChangeEventProcessor: run: shortestPath found");
+
+                                for (Link spLink : spLinks) {
+                                    LOG.info("CustomLog: TopologyLinkDataChangeHandler: TopologyDataChangeEventProcessor: run: "
+                                                    + "shortestPath linkID {}, sourceID {}, sourceTp {}, " + "destinationID {}, destinationTp {} ",
+                                            spLink.getLinkId(), spLink.getSource().getSourceNode().getValue(),
+                                            spLink.getSource().getSourceTp().getValue(),
+                                            spLink.getDestination().getDestNode().getValue(),
+                                            spLink.getDestination().getDestTp().getValue());
+
+
+                                    CustomFlowWriter flowWriter = new CustomFlowWriter(salFlowService);
+
+                                    flowWriter.setFlowHardTimeout(0);
+                                    flowWriter.setFlowIdleTimeout(0);
+                                    flowWriter.setFlowPriority(500);
+                                    flowWriter.setFlowTableId((short) 0);
+
+                                    //flowWriter.setSrcMac(hostNodes.get(0).getAddresses().get(0).getMac());
+                                    //flowWriter.setDestMac(hostNodes.get(1).getAddresses().get(0).getMac());
+
+                                    //Find first Link
+                                    //Link firstLink = spLinks.get(0);
+
+
+                                    //Create flow on source of first link
+                                    /*InstanceIdentifier<NodeConnector> nodeConnectorInstanceIdentifier;
+                                    NodeConnectorRef nodeConnectorRef;
+
+                                    nodeConnectorInstanceIdentifier = InstanceIdentifier.builder(Nodes.class)
+                                            .child(org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node.class, new NodeKey(new NodeId(firstLink.getSource().getSourceNode().getValue())))
+                                            .child(NodeConnector.class, new NodeConnectorKey(new NodeConnectorId(firstLink.getLinkId().getValue()))).build();
+                                    nodeConnectorRef = new NodeConnectorRef(nodeConnectorInstanceIdentifier);*/
+
+                                    NodeConnectorRef srcNodeConnectorRef = getSourceNodeConnectorRef(spLink);
+                                    NodeConnectorRef destNodeConnectorRef = getDestNodeConnectorRef(spLink);
+
+                                    /*flowWriter.addMacToMacFlow(hostNodes.get(0).getAddresses().get(0).getMac(),
+                                            hostNodes.get(1).getAddresses().get(0).getMac(),
+                                            nodeConnectorRef);*/
+
+                                    LOG.info("CustomLog: TopologyLinkDataChangeHandler: TopologyDataChangeEventProcessor: run: before adding bidirectional flow ");
+                                    flowWriter.addBidirectionalMacToMacFlows(hostNodes.get(0).getAddresses().get(0).getMac(),
+                                            srcNodeConnectorRef,
+                                            hostNodes.get(1).getAddresses().get(0).getMac(),
+                                            destNodeConnectorRef);
+
+
+                                    LOG.info("CustomLog: TopologyLinkDataChangeHandler: TopologyDataChangeEventProcessor: run: before adding bidirectional flow " +
+                                                    "src {}, dest {}, link {} ",
+                                            hostNodes.get(0).getAddresses().get(0).getMac(),
+                                            hostNodes.get(1).getAddresses().get(0).getMac(),
+                                            spLink.getLinkId().getValue());
+
+
+                                }
+                            }
+                        }
+                    }
+                }
+            }
 
             LOG.debug("Done with network graph refresh thread.");
+        }
+
+        /*private List<Link> findPath(NodeId srcId, NodeId destId, HashMap<String, Link> spLinkMap){
+
+            LOG.info("CustomLog: TopologyLinkDataChangeHandler: findPath: started");
+            //Object[] keys = hNodes.keySet().toArray();
+
+            //NodeId srcId = hNodes.get((HostNode)keys[0]).getNodeId();
+            //NodeId destId = hNodes.get((HostNode)keys[1]).getNodeId();
+
+            //Find the shortest path
+            List<Link> spLinks = networkGraphService.getPath(srcId, destId);
+
+            //Add links to map, Map key is the sourceId of the link
+            for(Link spLink: spLinks)
+                spLinkMap.put(spLink.getSource().getSourceNode().getValue(), spLink);
+
+            ListIterator<Link> linkIterator = spLinks.listIterator();
+
+            //Iterate through all the links
+            while(linkIterator.hasNext()){
+
+                Link spLink = linkIterator.next();
+
+                //In case there is no link exists in the list of link returned
+                //with sourceId as the destinationId of this current link
+                //This means all the links were not returned by the algo
+                if(!(spLinkMap.containsKey(spLink.getDestination().getDestNode().getValue()))) {
+                    //Recursively run findPath to find the path between this link's destination id
+                    //And the actual destinationId
+                    findPath(spLink.getDestination().getDestNode(), destId, spLinkMap);
+                }
+
+            }
+
+            *//*for(Link spLink: spLinks) {
+                Link newLink = findLinkWithSrc(spLink.getDestination().getDestNode().getValue(), spLinks);
+            }*//*
+            LOG.info("CustomLog: TopologyLinkDataChangeHandler: findPath: ended");
+            return (List<Link>) spLinkMap.values();
+        }*/
+
+
+        private void createFlows(){
+
+            List<Node> topoNodes = getNodesFromTopology();
+
+            List<HostNode> hostNodes = null;
+            List<Node> switchNodes = null;
+
+            List<Node> hostNodes1 = null;
+
+            if(topoNodes == null || topoNodes.isEmpty())
+                LOG.info("CustomLog: TopologyLinkDataChangeHandler: createAndUpdateFlows: no nodes found");
+            else {
+
+                LOG.info("CustomLog: TopologyLinkDataChangeHandler: createAndUpdateFlows: nodes found");
+
+                hostNodes = new ArrayList<HostNode>();
+                switchNodes = new ArrayList<Node>();
+
+                //hostNodes1 = new ArrayList<Node>();
+
+                for (Node node : topoNodes) {
+                    HostNode hostNode = node.getAugmentation(HostNode.class);
+
+                    if (hostNode != null) {
+                        hostNodes.add(hostNode);
+                        //hostNodes1.add(node);
+                    }
+                    else
+                        switchNodes.add(node);
+                }
+            }
+
+        }
+
+        private HashMap<String, Link> createLinkMap(List<Link> spLinks){
+
+            HashMap<String, Link> sLinkMap = new HashMap<String, Link>();
+
+            for(Link spLink: spLinks)
+                sLinkMap.put(spLink.getSource().getSourceNode().getValue(), spLink);
+
+            return sLinkMap;
+
+        }
+
+        /*private void printSomeLogs(){
+            if(hostNodes == null || hostNodes.isEmpty())
+                    LOG.info("CustomLog: TopologyLinkDataChangeHandler: TopologyDataChangeEventProcessor: no host nodes found");
+                else {
+
+                    if (switchNodes == null || switchNodes.isEmpty())
+                        LOG.info("CustomLog: TopologyLinkDataChangeHandler: TopologyDataChangeEventProcessor: no switch nodes found");
+                    else {
+
+                        boolean debug = false;
+
+                        //debug logs block starts here
+                        if (debug) {
+
+                            LOG.info("CustomLog: TopologyLinkDataChangeHandler: switchNodes: switch nodes found, size {} ",
+                                    switchNodes.size());
+
+                            NodeId s1 = null;
+                            NodeId s2 = null;
+                            NodeId s3 = null;
+
+                            LOG.info("CustomLog: TopologyLinkDataChangeHandler: switchNodes: parsing ");
+                            for (Node switchNode : switchNodes) {
+
+                                LOG.info("CustomLog: TopologyLinkDataChangeHandler: switchNodes: parsing: ID {} ",
+                                        switchNode.getNodeId().getValue());
+
+                                if (switchNode.getNodeId().getValue().equals("openflow:1"))
+                                    s1 = switchNode.getNodeId();
+                                if (switchNode.getNodeId().getValue().equals("openflow:2"))
+                                    s2 = switchNode.getNodeId();
+                                if (switchNode.getNodeId().getValue().equals("openflow:3"))
+                                    s3 = switchNode.getNodeId();
+                            }
+
+
+                            if (s1 != null && s2 != null) {
+
+                                LOG.info("CustomLog: TopologyLinkDataChangeHandler: TopologyDataChangeEventProcessor: " +
+                                                "Finding shortestPath between {} and {} ",
+                                        s1, s2);
+
+                                List<Link> spLinks1 = networkGraphService.getPath(s1, s2);
+                                if (spLinks1 == null || spLinks1.isEmpty())
+                                    LOG.info("CustomJunkLog: TopologyLinkDataChangeHandler: createAndUpdateFlows: shortest path noth found");
+                                else {
+
+                                    LOG.info("CustomJunkLog: TopologyLinkDataChangeHandler: createAndUpdateFlows: shortestPath found");
+
+                                    for (Link spLink : spLinks1) {
+                                        LOG.info("CustomJunkLog: TopologyLinkDataChangeHandler: createAndUpdateFlows: "
+                                                        + "shortestPath linkID {}, sourceID {}, sourceTp {}, " +
+                                                        "destinationID {}, destinationTp {} ",
+                                                spLink.getLinkId(),
+                                                spLink.getSource().getSourceNode().getValue(),
+                                                spLink.getSource().getSourceTp().getValue(),
+                                                spLink.getDestination().getDestNode().getValue(),
+                                                spLink.getDestination().getDestTp().getValue());
+                                    }
+                                }
+                            }
+
+                            if (switchNodes.size() == 5) {
+
+                                LOG.info("CustomLog: TopologyLinkDataChangeHandler: switchNodes: size is 5 ");
+
+                                s1 = null;
+                                NodeId s5 = null;
+
+                                for (Node switchNode : switchNodes) {
+
+                                    if (switchNode.getNodeId().getValue().equals("openflow:1"))
+                                        s1 = switchNode.getNodeId();
+                                    if (switchNode.getNodeId().getValue().equals("openflow:5"))
+                                        s5 = switchNode.getNodeId();
+                                }
+
+
+                                if (s1 != null && s5 != null) {
+
+                                    LOG.info("CustomLog: TopologyLinkDataChangeHandler: TopologyDataChangeEventProcessor: " +
+                                                    "Finding shortestPath between {} and {} ",
+                                            s1, s5);
+
+                                    List<Link> spLinks1 = networkGraphService.getPath(s1, s5);
+                                    if (spLinks1 == null || spLinks1.isEmpty())
+                                        LOG.info("CustomJunkLog: TopologyLinkDataChangeHandler: createAndUpdateFlows: shortest path noth found");
+                                    else {
+
+                                        LOG.info("CustomJunkLog: TopologyLinkDataChangeHandler: createAndUpdateFlows: shortestPath found");
+
+                                        for (Link spLink : spLinks1) {
+                                            LOG.info("CustomJunkLog: TopologyLinkDataChangeHandler: createAndUpdateFlows: "
+                                                            + "shortestPath linkID {}, sourceID {}, sourceTp {}, " +
+                                                            "destinationID {}, destinationTp {} ",
+                                                    spLink.getLinkId(),
+                                                    spLink.getSource().getSourceNode().getValue(),
+                                                    spLink.getSource().getSourceTp().getValue(),
+                                                    spLink.getDestination().getDestNode().getValue(),
+                                                    spLink.getDestination().getDestTp().getValue());
+                                        }
+                                    }
+                                }
+                            }
+
+                            LOG.info("CustomLog: TopologyLinkDataChangeHandler: hostNodes: findingpath between hosts ");
+
+                            NodeId srcId = null;
+                            NodeId destId = null;
+
+                            for (Node topoNode1 : topoNodes) {
+                                if (topoNode1.getNodeId().getValue().equals("host:00:00:00:00:00:01")) {
+                                    LOG.info("CustomLog: TopologyLinkDataChangeHandler: hostNodes: findingpath between hosts - assigning srcId");
+                                    srcId = topoNode1.getNodeId();
+                                }
+                                if (topoNode1.getNodeId().getValue().equals("host:00:00:00:00:00:02")) {
+                                    LOG.info("CustomLog: TopologyLinkDataChangeHandler: hostNodes: findingpath between hosts - assigning destId");
+                                    destId = topoNode1.getNodeId();
+                                }
+                            }
+
+                            List<Link> spLinks1 = networkGraphService.getPath(srcId, destId);
+                            if (spLinks1 == null || spLinks1.isEmpty())
+                                LOG.info("CustomJunkLog: TopologyLinkDataChangeHandler: hostNodes: findingpath between hosts - path NOT found");
+                            else {
+
+                                LOG.info("CustomJunkLog: TopologyLinkDataChangeHandler: hostNodes: findingpath between hosts - path found");
+
+                                for (Link spLink : spLinks1) {
+                                    LOG.info("CustomJunkLog: TopologyLinkDataChangeHandler: createAndUpdateFlows: "
+                                                    + "shortestPath linkID {}, sourceID {}, sourceTp {}, " +
+                                                    "destinationID {}, destinationTp {} ",
+                                            spLink.getLinkId(),
+                                            spLink.getSource().getSourceNode().getValue(),
+                                            spLink.getSource().getSourceTp().getValue(),
+                                            spLink.getDestination().getDestNode().getValue(),
+                                            spLink.getDestination().getDestTp().getValue());
+                                }
+                            }
+                        }
+                        //debug logs block ends here
+                    }
+                }
+        }*/
+
+        private List<Node> getNodesFromTopology() {
+            InstanceIdentifier<Topology> topologyInstanceIdentifier = InstanceIdentifierUtils
+                    .generateTopologyInstanceIdentifier(topologyId);
+            Topology topology = null;
+            ReadOnlyTransaction readOnlyTransaction = dataBroker.newReadOnlyTransaction();
+            try {
+                Optional<Topology> topologyOptional = readOnlyTransaction
+                        .read(LogicalDatastoreType.OPERATIONAL, topologyInstanceIdentifier).get();
+                if (topologyOptional.isPresent()) {
+                    topology = topologyOptional.get();
+                }
+            } catch (Exception e) {
+                LOG.error("Error reading topology {}", topologyInstanceIdentifier);
+                readOnlyTransaction.close();
+                throw new RuntimeException(
+                        "Error reading from operational store, topology : " + topologyInstanceIdentifier, e);
+            }
+            readOnlyTransaction.close();
+            if (topology == null) {
+                return null;
+            }
+
+            //Geting nodes from topology
+            List<Node> nodes = topology.getNode();
+            if (nodes == null || nodes.isEmpty()) {
+                return null;
+            }
+
+            return nodes;
+        }
+
+        private void printHostNodesInformation(HashMap<HostNode, Node> hNodes){
+            LOG.info("CustomLog: TopologyLinkDataChangeHandler: printHostNodesInformation");
+
+            for(HostNode hNode: hNodes.keySet()){
+
+                LOG.info("CustomLog: TopologyLinkDataChangeHandler: printHostNodesInformation " +
+                        "hostNodeId {}", hNode.getId().getValue());
+
+                LOG.info("CustomLog: TopologyLinkDataChangeHandler: printHostNodesInformation " +
+                        " switchId {}",  hNodes.get(hNode).getNodeId().getValue());
+            }
+
         }
 
         private List<Link> getLinksFromTopology() {
@@ -665,8 +941,6 @@ public class TopologyLinkDataChangeHandler implements DataChangeListener {
             }
             return internalLinks;
         }
-
-
 
 
         /**

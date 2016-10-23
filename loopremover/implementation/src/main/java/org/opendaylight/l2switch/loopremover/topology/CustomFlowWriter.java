@@ -7,21 +7,17 @@
  */
 package org.opendaylight.l2switch.loopremover.topology;
 
-import java.math.BigInteger;
-import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.atomic.AtomicLong;
-
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
+import org.opendaylight.l2switch.loopremover.util.InstanceIdentifierUtils;
+//import org.opendaylight.l2switch.util.InstanceIdentifierUtils;
 import org.opendaylight.openflowplugin.api.OFConstants;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.OutputActionCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.output.action._case.OutputActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.ActionBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.ActionKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNode;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.Table;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.TableKey;
@@ -35,7 +31,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.service.rev130819.SalF
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.FlowCookie;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.FlowModFlags;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.FlowRef;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.OutputPortValues;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.InstructionsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.Match;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
@@ -44,40 +39,42 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instru
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.apply.actions._case.ApplyActionsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.Instruction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.InstructionBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorRef;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeRef;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.node.NodeConnector;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.node.NodeConnectorKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.NodeKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.l2.types.rev130827.EtherType;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.ethernet.match.fields.EthernetTypeBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.ethernet.match.fields.EthernetDestinationBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.ethernet.match.fields.EthernetSourceBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.EthernetMatch;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.EthernetMatchBuilder;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.ImmutableList;
+import java.math.BigInteger;
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicLong;
 
-/**
- * Adds a flow, which sends all LLDP packets to the controller, on all switches.
- * Registers as ODL Inventory listener so that it can add flows once a new node i.e. switch is added
- */
 public class CustomFlowWriter {
     private static final Logger LOG = LoggerFactory.getLogger(CustomFlowWriter.class);
-
-    private final ExecutorService initialFlowExecutor = Executors.newCachedThreadPool();
-    private final SalFlowService salFlowService;
     private final String FLOW_ID_PREFIX = "CustomFlow-";
-    private final int LLDP_ETHER_TYPE = 35020;
+    private SalFlowService salFlowService;
     private short flowTableId;
     private int flowPriority;
     private int flowIdleTimeout;
     private int flowHardTimeout;
 
     private AtomicLong flowIdInc = new AtomicLong();
-    private AtomicLong flowCookieInc = new AtomicLong(0x2b00000000000000L);
-
+    private AtomicLong flowCookieInc = new AtomicLong(0x2a00000000000000L);
+    private final Integer DEFAULT_TABLE_ID = 0;
+    private final Integer DEFAULT_PRIORITY = 10;
+    private final Integer DEFAULT_HARD_TIMEOUT = 3600;
+    private final Integer DEFAULT_IDLE_TIMEOUT = 1800;
 
     public CustomFlowWriter(SalFlowService salFlowService) {
+        Preconditions.checkNotNull(salFlowService, "salFlowService should not be null.");
         this.salFlowService = salFlowService;
     }
 
@@ -97,160 +94,179 @@ public class CustomFlowWriter {
         this.flowHardTimeout = flowHardTimeout;
     }
 
-    //Jitu: Should not be uncommented
-    /*public ListenerRegistration<DataChangeListener> registerAsDataChangeListener(DataBroker dataBroker) {
-        InstanceIdentifier<Node> nodeInstanceIdentifier = InstanceIdentifier.builder(Nodes.class)
-                .child(Node.class).build();
+    /**
+     * Writes a flow that forwards packets to destPort if destination mac in
+     * packet is destMac and source Mac in packet is sourceMac. If sourceMac is
+     * null then flow would not set any source mac, resulting in all packets
+     * with destMac being forwarded to destPort.
+     *
+     * @param sourceMac
+     * @param destMac
+     * @param destNodeConnectorRef
+     */
+    public void addMacToMacFlow(MacAddress sourceMac, MacAddress destMac, NodeConnectorRef destNodeConnectorRef) {
 
-        return dataBroker.registerDataChangeListener(LogicalDatastoreType.OPERATIONAL, nodeInstanceIdentifier, this, AsyncDataBroker.DataChangeScope.BASE);
-    }*/
+        Preconditions.checkNotNull(destMac, "Destination mac address should not be null.");
+        Preconditions.checkNotNull(destNodeConnectorRef, "Destination port should not be null.");
 
-    //Jitu: Should not be uncommented
-    /*@Override
-    public void onDataChanged(AsyncDataChangeEvent<InstanceIdentifier<?>, DataObject> instanceIdentifierDataObjectAsyncDataChangeEvent) {
-        Map<InstanceIdentifier<?>, DataObject> createdData = instanceIdentifierDataObjectAsyncDataChangeEvent.getCreatedData();
-        if(createdData !=null && !createdData.isEmpty()) {
-            Set<InstanceIdentifier<?>> nodeIds = createdData.keySet();
-            if(nodeIds != null && !nodeIds.isEmpty()) {
-                initialFlowExecutor.submit(new InitialFlowWriterProcessor(nodeIds));
-            }
+        // do not add flow if both macs are same.
+        if (sourceMac != null && destMac.equals(sourceMac)) {
+            LOG.info("In addMacToMacFlow: No flows added. Source and Destination mac are same.");
+            return;
         }
-    }*/
+        LOG.info("CustomLog: CustomFlowWriter: addMacToMacFlow");
 
+        // get flow table key
+        TableKey flowTableKey = new TableKey((short) flowTableId);
 
+        // build a flow path based on node connector to program flow
+        InstanceIdentifier<Flow> flowPath = buildFlowPath(destNodeConnectorRef, flowTableKey);
+
+        // build a flow that target given mac id
+        Flow flowBody = createMacToMacFlow(flowTableKey.getId(), flowPriority, sourceMac, destMac,
+                destNodeConnectorRef);
+
+        // commit the flow in config data
+        writeFlowToConfigData(flowPath, flowBody);
+    }
 
     /**
-     * A private class to process the node updated event in separate thread. Allows to release the
-     * thread that invoked the data node updated event. Avoids any thread lock it may cause.
+     * Writes mac-to-mac flow on all ports that are in the path between given
+     * source and destination ports. It uses path provided by
+     * org.opendaylight.l2switch.loopremover.topology.NetworkGraphService to
+     * find a links
+     * {@link org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Link}
+     * between given ports. And then writes appropriate flow on each port that
+     * is covered in that path.
+     *
+     * @param sourceMac
+     * @param sourceNodeConnectorRef
+     * @param destMac
+     * @param destNodeConnectorRef
      */
-    private class InitialFlowWriterProcessor implements Runnable {
-        Set<InstanceIdentifier<?>> nodeIds = null;
 
-        public InitialFlowWriterProcessor(Set<InstanceIdentifier<?>> nodeIds) {
-            this.nodeIds = nodeIds;
-        }
+    public void addBidirectionalMacToMacFlows(MacAddress sourceMac, NodeConnectorRef sourceNodeConnectorRef,
+            MacAddress destMac, NodeConnectorRef destNodeConnectorRef) {
+        Preconditions.checkNotNull(sourceMac, "Source mac address should not be null.");
+        Preconditions.checkNotNull(sourceNodeConnectorRef, "Source port should not be null.");
+        Preconditions.checkNotNull(destMac, "Destination mac address should not be null.");
+        Preconditions.checkNotNull(destNodeConnectorRef, "Destination port should not be null.");
 
-        @Override
-        public void run() {
-
-            if(nodeIds == null) {
-                return;
-            }
-
-            for(InstanceIdentifier<?> nodeId : nodeIds) {
-                if(Node.class.isAssignableFrom(nodeId.getTargetType())) {
-                    InstanceIdentifier<Node> topoNodeId = (InstanceIdentifier<Node>)nodeId;
-                    if(topoNodeId.firstKeyOf(Node.class,NodeKey.class).getId().getValue().contains("openflow:")) {
-                        addInitialFlows(topoNodeId);
-                    }
-                }
-            }
+        if (sourceNodeConnectorRef.equals(destNodeConnectorRef)) {
+            LOG.info("In addMacToMacFlowsUsingShortestPath: No flows added. Source and Destination ports are same.");
+            return;
 
         }
 
-        /*
-         * Adds a flow, which sends all LLDP packets to the controller, to the specified node.
-         * @param nodeId The node to write the flow on.
-        */
-        public void addInitialFlows(InstanceIdentifier<Node> nodeId) {
-            LOG.debug("adding initial flows for node {} ", nodeId);
+        LOG.info("CustomLog: CustomFlowWriter: addMacToMacFlowsUsingShortestPath");
 
-            InstanceIdentifier<Table> tableId = getTableInstanceId(nodeId);
-            InstanceIdentifier<Flow> flowId = getFlowInstanceId(tableId);
+        // add destMac-To-sourceMac flow on source port
+        addMacToMacFlow(destMac, sourceMac, sourceNodeConnectorRef);
 
-            //add lldpToController flow
-            writeFlowToController(nodeId, tableId, flowId, createLldpToControllerFlow(flowTableId, flowPriority));
+        // add sourceMac-To-destMac flow on destination port
+        addMacToMacFlow(sourceMac, destMac, destNodeConnectorRef);
+    }
 
-            LOG.debug("Added initial flows for node {} ", nodeId);
+    /**
+     * @param nodeConnectorRef
+     * @return
+     */
+    private InstanceIdentifier<Flow> buildFlowPath(NodeConnectorRef nodeConnectorRef, TableKey flowTableKey) {
+
+        // generate unique flow key
+        FlowId flowId = new FlowId(FLOW_ID_PREFIX+String.valueOf(flowIdInc.getAndIncrement()));
+        FlowKey flowKey = new FlowKey(flowId);
+
+        return InstanceIdentifierUtils.generateFlowInstanceIdentifier(nodeConnectorRef, flowTableKey, flowKey);
+    }
+
+    /**
+     * @param tableId
+     * @param priority
+     * @param sourceMac
+     * @param destMac
+     * @param destPort
+     * @return {@link FlowBuilder}
+     *         builds flow that forwards all packets with destMac to given port
+     */
+    private Flow createMacToMacFlow(Short tableId, int priority, MacAddress sourceMac, MacAddress destMac,
+            NodeConnectorRef destPort) {
+
+        // start building flow
+        FlowBuilder macToMacFlow = new FlowBuilder() //
+                .setTableId(tableId) //
+                .setFlowName("mac2mac");
+
+        // use its own hash code for id.
+        macToMacFlow.setId(new FlowId(Long.toString(macToMacFlow.hashCode())));
+
+        // create a match that has mac to mac ethernet match
+        EthernetMatchBuilder ethernetMatchBuilder = new EthernetMatchBuilder() //
+                .setEthernetDestination(new EthernetDestinationBuilder() //
+                        .setAddress(destMac) //
+                        .build());
+        // set source in the match only if present
+        if (sourceMac != null) {
+            ethernetMatchBuilder.setEthernetSource(new EthernetSourceBuilder().setAddress(sourceMac).build());
         }
+        EthernetMatch ethernetMatch = ethernetMatchBuilder.build();
+        Match match = new MatchBuilder().setEthernetMatch(ethernetMatch).build();
 
-        private InstanceIdentifier<Table> getTableInstanceId(InstanceIdentifier<Node> nodeId) {
-            // get flow table key
-            TableKey flowTableKey = new TableKey(flowTableId);
-            return nodeId.builder()
-                    .augmentation(FlowCapableNode.class)
-                    .child(Table.class, flowTableKey)
-                    .build();
-        }
+        Uri destPortUri = destPort.getValue().firstKeyOf(NodeConnector.class, NodeConnectorKey.class).getId();
 
-        private InstanceIdentifier<Flow> getFlowInstanceId(InstanceIdentifier<Table> tableId) {
-            // generate unique flow key
-            FlowId flowId = new FlowId(FLOW_ID_PREFIX + String.valueOf(flowIdInc.getAndIncrement()));
-            FlowKey flowKey = new FlowKey(flowId);
-            return tableId.child(Flow.class, flowKey);
-        }
+        Action outputToControllerAction = new ActionBuilder() //
+                .setOrder(0)
+                .setAction(new OutputActionCaseBuilder() //
+                        .setOutputAction(new OutputActionBuilder() //
+                                .setMaxLength(0xffff) //
+                                .setOutputNodeConnector(destPortUri) //
+                                .build()) //
+                        .build()) //
+                .build();
 
-        private Flow createLldpToControllerFlow(Short tableId, int priority) {
+        // Create an Apply Action
+        ApplyActions applyActions = new ApplyActionsBuilder().setAction(ImmutableList.of(outputToControllerAction))
+                .build();
 
-            // start building flow
-            FlowBuilder lldpFlow = new FlowBuilder() //
-                    .setTableId(tableId) //
-                    .setFlowName("lldptocntrl");
+        // Wrap our Apply Action in an Instruction
+        Instruction applyActionsInstruction = new InstructionBuilder() //
+                .setOrder(0)
+                .setInstruction(new ApplyActionsCaseBuilder()//
+                        .setApplyActions(applyActions) //
+                        .build()) //
+                .build();
 
-            // use its own hash code for id.
-            lldpFlow.setId(new FlowId(Long.toString(lldpFlow.hashCode())));
-            EthernetMatchBuilder ethernetMatchBuilder = new EthernetMatchBuilder()
-                    .setEthernetType(new EthernetTypeBuilder()
-                            .setType(new EtherType(Long.valueOf(LLDP_ETHER_TYPE))).build());
+        // Put our Instruction in a list of Instructions
+        macToMacFlow.setMatch(match) //
+                .setInstructions(new InstructionsBuilder() //
+                        .setInstruction(ImmutableList.of(applyActionsInstruction)) //
+                        .build()) //
+                .setPriority(priority) //
+                .setBufferId(OFConstants.OFP_NO_BUFFER) //
+                .setHardTimeout(flowHardTimeout) //
+                .setIdleTimeout(flowIdleTimeout) //
+                .setCookie(new FlowCookie(BigInteger.valueOf(flowCookieInc.getAndIncrement())))
+                .setFlags(new FlowModFlags(false, false, false, false, false));
 
-            Match match = new MatchBuilder()
-                    .setEthernetMatch(ethernetMatchBuilder.build())
-                    .build();
+        return macToMacFlow.build();
+    }
 
-            // Create an Apply Action
-            ApplyActions applyActions = new ApplyActionsBuilder().setAction(ImmutableList.of(getSendToControllerAction()))
-                    .build();
-
-            // Wrap our Apply Action in an Instruction
-            Instruction applyActionsInstruction = new InstructionBuilder() //
-                    .setOrder(0)
-                    .setInstruction(new ApplyActionsCaseBuilder()//
-                            .setApplyActions(applyActions) //
-                            .build()) //
-                    .build();
-
-            // Put our Instruction in a list of Instructions
-            lldpFlow
-                    .setMatch(match) //
-                    .setInstructions(new InstructionsBuilder() //
-                            .setInstruction(ImmutableList.of(applyActionsInstruction)) //
-                            .build()) //
-                    .setPriority(priority) //
-                    .setBufferId(OFConstants.OFP_NO_BUFFER) //
-                    .setHardTimeout(flowHardTimeout) //
-                    .setIdleTimeout(flowIdleTimeout) //
-                    .setCookie(new FlowCookie(BigInteger.valueOf(flowCookieInc.getAndIncrement())))
-                    .setFlags(new FlowModFlags(false, false, false, false, false));
-
-            return lldpFlow.build();
-        }
-
-        private Action getSendToControllerAction() {
-            Action sendToController = new ActionBuilder()
-                    .setOrder(0)
-                    .setKey(new ActionKey(0))
-                    .setAction(new OutputActionCaseBuilder()
-                            .setOutputAction(new OutputActionBuilder()
-                                    .setMaxLength(0xffff)
-                                    .setOutputNodeConnector(new Uri(OutputPortValues.CONTROLLER.toString()))
-                                    .build())
-                            .build())
-                    .build();
-
-            return sendToController;
-        }
-
-        private Future<RpcResult<AddFlowOutput>> writeFlowToController(InstanceIdentifier<Node> nodeInstanceId,
-                                                                       InstanceIdentifier<Table> tableInstanceId,
-                                                                       InstanceIdentifier<Flow> flowPath,
-                                                                       Flow flow) {
-            LOG.trace("Adding flow to node {}",nodeInstanceId.firstKeyOf(Node.class, NodeKey.class).getId().getValue());
-            final AddFlowInputBuilder builder = new AddFlowInputBuilder(flow);
-            builder.setNode(new NodeRef(nodeInstanceId));
-            builder.setFlowRef(new FlowRef(flowPath));
-            builder.setFlowTable(new FlowTableRef(tableInstanceId));
-            builder.setTransactionUri(new Uri(flow.getId().getValue()));
-            return salFlowService.addFlow(builder.build());
-        }
+    /**
+     * Starts and commits data change transaction which modifies provided flow
+     * path with supplied body.
+     *
+     * @param flowPath
+     * @param flow
+     * @return transaction commit
+     */
+    private Future<RpcResult<AddFlowOutput>> writeFlowToConfigData(InstanceIdentifier<Flow> flowPath, Flow flow) {
+        final InstanceIdentifier<Table> tableInstanceId = flowPath.<Table>firstIdentifierOf(Table.class);
+        final InstanceIdentifier<Node> nodeInstanceId = flowPath.<Node>firstIdentifierOf(Node.class);
+        final AddFlowInputBuilder builder = new AddFlowInputBuilder(flow);
+        builder.setNode(new NodeRef(nodeInstanceId));
+        builder.setFlowRef(new FlowRef(flowPath));
+        builder.setFlowTable(new FlowTableRef(tableInstanceId));
+        builder.setTransactionUri(new Uri(flow.getId().getValue()));
+        return salFlowService.addFlow(builder.build());
     }
 }
