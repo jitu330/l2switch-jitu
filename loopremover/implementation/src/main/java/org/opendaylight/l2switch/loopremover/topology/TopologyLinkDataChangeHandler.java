@@ -9,7 +9,6 @@ package org.opendaylight.l2switch.loopremover.topology;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Iterables;
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
@@ -26,15 +25,12 @@ import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.AsyncDataChangeEvent;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.l2switch.loopremover.util.InstanceIdentifierUtils;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.service.rev130819.SalFlowService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.host.tracker.rev140624.HostNode;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorRef;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.node.NodeConnector;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.node.NodeConnectorBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.node.NodeConnectorKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.NodeKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.l2switch.loopremover.rev140714.StpStatus;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.l2switch.loopremover.rev140714.StpStatusAwareNodeConnector;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.l2switch.loopremover.rev140714.StpStatusAwareNodeConnectorBuilder;
@@ -194,250 +190,6 @@ public class TopologyLinkDataChangeHandler implements DataChangeListener {
             threadReschedule = true;
         }
     }
-            /*
-            CustomLog: TopologyLinkDataChangeHandler: getHostsFromTopology: hostNode id HostId [_value=00:00:00:00:00:01]
-            CustomLog: TopologyLinkDataChangeHandler: getHostsFromTopology: hostNode address IP IpAddress [_ipv4Address=Ipv4Address [_value=10.0.0.1]], MAC MacAddress [_value=00:00:00:00:00:01]
-            CustomLog: TopologyLinkDataChangeHandler: getHostsFromTopology: attPoints Tp host:00:00:00:00:00:01, isActive true
-            CustomLog: TopologyLinkDataChangeHandler: getHostsFromTopology: hostNode id HostId [_value=00:00:00:00:00:02]
-            CustomLog: TopologyLinkDataChangeHandler: getHostsFromTopology: hostNode address IP IpAddress [_ipv4Address=Ipv4Address [_value=10.0.0.2]], MAC MacAddress [_value=00:00:00:00:00:02]
-            CustomLog: TopologyLinkDataChangeHandler: getHostsFromTopology: attPoints Tp host:00:00:00:00:00:02, isActive true
-            {
-            "network-topology": {
-                "topology": [
-                    {
-                        "topology-id": "flow:1",
-                        "node": [
-                            {
-                                "node-id": "openflow:2",
-                                "termination-point": [
-                                    {
-                                        "tp-id": "openflow:2:LOCAL",
-                                        "opendaylight-topology-inventory:inventory-node-connector-ref": "/opendaylight-inventory:nodes/opendaylight-inventory:node[opendaylight-inventory:id='openflow:2']/opendaylight-inventory:node-connector[opendaylight-inventory:id='openflow:2:LOCAL']"
-                                    },
-                                    {
-                                        "tp-id": "openflow:2:1",
-                                        "opendaylight-topology-inventory:inventory-node-connector-ref": "/opendaylight-inventory:nodes/opendaylight-inventory:node[opendaylight-inventory:id='openflow:2']/opendaylight-inventory:node-connector[opendaylight-inventory:id='openflow:2:1']"
-                                    },
-                                    {
-                                        "tp-id": "openflow:2:3",
-                                        "opendaylight-topology-inventory:inventory-node-connector-ref": "/opendaylight-inventory:nodes/opendaylight-inventory:node[opendaylight-inventory:id='openflow:2']/opendaylight-inventory:node-connector[opendaylight-inventory:id='openflow:2:3']"
-                                    },
-                                    {
-                                        "tp-id": "openflow:2:2",
-                                        "opendaylight-topology-inventory:inventory-node-connector-ref": "/opendaylight-inventory:nodes/opendaylight-inventory:node[opendaylight-inventory:id='openflow:2']/opendaylight-inventory:node-connector[opendaylight-inventory:id='openflow:2:2']"
-                                    }
-                                ],
-                                "opendaylight-topology-inventory:inventory-node-ref": "/opendaylight-inventory:nodes/opendaylight-inventory:node[opendaylight-inventory:id='openflow:2']"
-                            },
-                            {
-                                "node-id": "host:00:00:00:00:00:01",
-                                "termination-point": [
-                                    {
-                                        "tp-id": "host:00:00:00:00:00:01"
-                                    }
-                                ],
-                                "host-tracker-service:id": "00:00:00:00:00:01",
-                                "host-tracker-service:addresses": [
-                                    {
-                                        "id": 0,
-                                        "ip": "10.0.0.1",
-                                        "mac": "00:00:00:00:00:01",
-                                        "first-seen": 1477163711143,
-                                        "last-seen": 1477163711143
-                                    }
-                                ],
-                                "host-tracker-service:attachment-points": [
-                                    {
-                                        "tp-id": "openflow:1:3",
-                                        "corresponding-tp": "host:00:00:00:00:00:01",
-                                        "active": true
-                                    }
-                                ]
-                            },
-                            {
-                                "node-id": "openflow:1",
-                                "termination-point": [
-                                    {
-                                        "tp-id": "openflow:1:2",
-                                        "opendaylight-topology-inventory:inventory-node-connector-ref": "/opendaylight-inventory:nodes/opendaylight-inventory:node[opendaylight-inventory:id='openflow:1']/opendaylight-inventory:node-connector[opendaylight-inventory:id='openflow:1:2']"
-                                    },
-                                    {
-                                        "tp-id": "openflow:1:1",
-                                        "opendaylight-topology-inventory:inventory-node-connector-ref": "/opendaylight-inventory:nodes/opendaylight-inventory:node[opendaylight-inventory:id='openflow:1']/opendaylight-inventory:node-connector[opendaylight-inventory:id='openflow:1:1']"
-                                    },
-                                    {
-                                        "tp-id": "openflow:1:LOCAL",
-                                        "opendaylight-topology-inventory:inventory-node-connector-ref": "/opendaylight-inventory:nodes/opendaylight-inventory:node[opendaylight-inventory:id='openflow:1']/opendaylight-inventory:node-connector[opendaylight-inventory:id='openflow:1:LOCAL']"
-                                    },
-                                    {
-                                        "tp-id": "openflow:1:3",
-                                        "opendaylight-topology-inventory:inventory-node-connector-ref": "/opendaylight-inventory:nodes/opendaylight-inventory:node[opendaylight-inventory:id='openflow:1']/opendaylight-inventory:node-connector[opendaylight-inventory:id='openflow:1:3']"
-                                    }
-                                ],
-                                "opendaylight-topology-inventory:inventory-node-ref": "/opendaylight-inventory:nodes/opendaylight-inventory:node[opendaylight-inventory:id='openflow:1']"
-                            },
-                            {
-                                "node-id": "host:00:00:00:00:00:02",
-                                "termination-point": [
-                                    {
-                                        "tp-id": "host:00:00:00:00:00:02"
-                                    }
-                                ],
-                                "host-tracker-service:id": "00:00:00:00:00:02",
-                                "host-tracker-service:addresses": [
-                                    {
-                                        "id": 3,
-                                        "ip": "10.0.0.2",
-                                        "mac": "00:00:00:00:00:02",
-                                        "first-seen": 1477163711320,
-                                        "last-seen": 1477163711320
-                                    }
-                                ],
-                                "host-tracker-service:attachment-points": [
-                                    {
-                                        "tp-id": "openflow:2:3",
-                                        "corresponding-tp": "host:00:00:00:00:00:02",
-                                        "active": true
-                                    }
-                                ]
-                            },
-                            {
-                                "node-id": "openflow:3",
-                                "termination-point": [
-                                    {
-                                        "tp-id": "openflow:3:LOCAL",
-                                        "opendaylight-topology-inventory:inventory-node-connector-ref": "/opendaylight-inventory:nodes/opendaylight-inventory:node[opendaylight-inventory:id='openflow:3']/opendaylight-inventory:node-connector[opendaylight-inventory:id='openflow:3:LOCAL']"
-                                    },
-                                    {
-                                        "tp-id": "openflow:3:2",
-                                        "opendaylight-topology-inventory:inventory-node-connector-ref": "/opendaylight-inventory:nodes/opendaylight-inventory:node[opendaylight-inventory:id='openflow:3']/opendaylight-inventory:node-connector[opendaylight-inventory:id='openflow:3:2']"
-                                    },
-                                    {
-                                        "tp-id": "openflow:3:1",
-                                        "opendaylight-topology-inventory:inventory-node-connector-ref": "/opendaylight-inventory:nodes/opendaylight-inventory:node[opendaylight-inventory:id='openflow:3']/opendaylight-inventory:node-connector[opendaylight-inventory:id='openflow:3:1']"
-                                    }
-                                ],
-                                "opendaylight-topology-inventory:inventory-node-ref": "/opendaylight-inventory:nodes/opendaylight-inventory:node[opendaylight-inventory:id='openflow:3']"
-                            }
-                        ],
-                        "link": [
-                            {
-                                "link-id": "openflow:1:2",
-                                "destination": {
-                                    "dest-tp": "openflow:3:2",
-                                    "dest-node": "openflow:3"
-                                },
-                                "source": {
-                                    "source-node": "openflow:1",
-                                    "source-tp": "openflow:1:2"
-                                }
-                            },
-                            {
-                                "link-id": "openflow:2:1",
-                                "destination": {
-                                    "dest-tp": "openflow:1:1",
-                                    "dest-node": "openflow:1"
-                                },
-                                "source": {
-                                    "source-node": "openflow:2",
-                                    "source-tp": "openflow:2:1"
-                                }
-                            },
-                            {
-                                "link-id": "openflow:3:1",
-                                "destination": {
-                                    "dest-tp": "openflow:2:2",
-                                    "dest-node": "openflow:2"
-                                },
-                                "source": {
-                                    "source-node": "openflow:3",
-                                    "source-tp": "openflow:3:1"
-                                }
-                            },
-                            {
-                                "link-id": "openflow:2:2",
-                                "destination": {
-                                    "dest-tp": "openflow:3:1",
-                                    "dest-node": "openflow:3"
-                                },
-                                "source": {
-                                    "source-node": "openflow:2",
-                                    "source-tp": "openflow:2:2"
-                                }
-                            },
-                            {
-                                "link-id": "openflow:3:2",
-                                "destination": {
-                                    "dest-tp": "openflow:1:2",
-                                    "dest-node": "openflow:1"
-                                },
-                                "source": {
-                                    "source-node": "openflow:3",
-                                    "source-tp": "openflow:3:2"
-                                }
-                            },
-                            {
-                                "link-id": "host:00:00:00:00:00:02/openflow:2:3",
-                                "destination": {
-                                    "dest-tp": "openflow:2:3",
-                                    "dest-node": "openflow:2"
-                                },
-                                "source": {
-                                    "source-node": "host:00:00:00:00:00:02",
-                                    "source-tp": "host:00:00:00:00:00:02"
-                                }
-                            },
-                            {
-                                "link-id": "openflow:1:1",
-                                "destination": {
-                                    "dest-tp": "openflow:2:1",
-                                    "dest-node": "openflow:2"
-                                },
-                                "source": {
-                                    "source-node": "openflow:1",
-                                    "source-tp": "openflow:1:1"
-                                }
-                            },
-                            {
-                                "link-id": "openflow:2:3/host:00:00:00:00:00:02",
-                                "destination": {
-                                    "dest-tp": "host:00:00:00:00:00:02",
-                                    "dest-node": "host:00:00:00:00:00:02"
-                                },
-                                "source": {
-                                    "source-node": "openflow:2",
-                                    "source-tp": "openflow:2:3"
-                                }
-                            },
-                            {
-                                "link-id": "host:00:00:00:00:00:01/openflow:1:3",
-                                "destination": {
-                                    "dest-tp": "openflow:1:3",
-                                    "dest-node": "openflow:1"
-                                },
-                                "source": {
-                                    "source-node": "host:00:00:00:00:00:01",
-                                    "source-tp": "host:00:00:00:00:00:01"
-                                }
-                            },
-                            {
-                                "link-id": "openflow:1:3/host:00:00:00:00:00:01",
-                                "destination": {
-                                    "dest-tp": "host:00:00:00:00:00:01",
-                                    "dest-node": "host:00:00:00:00:00:01"
-                                },
-                                "source": {
-                                    "source-node": "openflow:1",
-                                    "source-tp": "openflow:1:3"
-                                }
-                            }
-                        ]
-                    }
-                ]
-            }
-        }
-
-            */
 
     /**
      *
@@ -544,24 +296,14 @@ public class TopologyLinkDataChangeHandler implements DataChangeListener {
                             NodeId srcId = hNodes.get(hostNodes.get(0)).getNodeId();
                             NodeId destId = hNodes.get(hostNodes.get(1)).getNodeId();
 
+                            MacAddress srcMac = hostNodes.get(0).getAddresses().get(0).getMac();
+                            MacAddress destMac = hostNodes.get(1).getAddresses().get(0).getMac();
+
                             LOG.info("CustomLog: TopologyLinkDataChangeHandler: TopologyDataChangeEventProcessor: run: " +
                                             "Finding shortestPath between {} and {} ", srcId, destId);
 
                             List<Link> spLinks = networkGraphService.getPath(hNodes.get(hostNodes.get(0)).getNodeId(),
                                     hNodes.get(hostNodes.get(1)).getNodeId());
-
-                            /*
-                            * NetworkGraphService findPath is not returning all the link between source and destination
-                            * Sometimes the link from the destination is not present in the list of links received
-                            * Hashmap is temporally needed to find out if the same is the case
-                            *//*
-                            //HashMap<String, Link> spLinkMap = new HashMap<String, Link>();
-
-                            *//*
-                            * Custom method written to make sure all the links are returned between
-                            * a srouce and destination
-                            *//*
-                            *//*List<Link> spLinks = findPath(srcId, destId, spLinkMap);*/
 
                             if (spLinks == null || spLinks.isEmpty())
                                 LOG.info("CustomLog: TopologyLinkDataChangeHandler: TopologyDataChangeEventProcessor: run: shortest path not found");
@@ -569,6 +311,13 @@ public class TopologyLinkDataChangeHandler implements DataChangeListener {
 
                                 LOG.info("CustomLog: TopologyLinkDataChangeHandler: TopologyDataChangeEventProcessor: run: shortestPath found");
 
+                                CustomFlowWriter flowWriter = new CustomFlowWriter(salFlowService);
+                                flowWriter.setFlowHardTimeout(0);
+                                flowWriter.setFlowIdleTimeout(0);
+                                flowWriter.setFlowPriority(500);
+                                flowWriter.setFlowTableId((short) 0);
+
+                                //Add flows for swtich to switch communication
                                 for (Link spLink : spLinks) {
                                     LOG.info("CustomLog: TopologyLinkDataChangeHandler: TopologyDataChangeEventProcessor: run: "
                                                     + "shortestPath linkID {}, sourceID {}, sourceTp {}, " + "destinationID {}, destinationTp {} ",
@@ -577,43 +326,31 @@ public class TopologyLinkDataChangeHandler implements DataChangeListener {
                                             spLink.getDestination().getDestNode().getValue(),
                                             spLink.getDestination().getDestTp().getValue());
 
-
-                                    CustomFlowWriter flowWriter = new CustomFlowWriter(salFlowService);
-
-                                    flowWriter.setFlowHardTimeout(0);
-                                    flowWriter.setFlowIdleTimeout(0);
-                                    flowWriter.setFlowPriority(500);
-                                    flowWriter.setFlowTableId((short) 0);
-
-                                    //flowWriter.setSrcMac(hostNodes.get(0).getAddresses().get(0).getMac());
-                                    //flowWriter.setDestMac(hostNodes.get(1).getAddresses().get(0).getMac());
-
-                                    //Find first Link
-                                    //Link firstLink = spLinks.get(0);
-
-
-                                    //Create flow on source of first link
-                                    /*InstanceIdentifier<NodeConnector> nodeConnectorInstanceIdentifier;
-                                    NodeConnectorRef nodeConnectorRef;
-
-                                    nodeConnectorInstanceIdentifier = InstanceIdentifier.builder(Nodes.class)
-                                            .child(org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node.class, new NodeKey(new NodeId(firstLink.getSource().getSourceNode().getValue())))
-                                            .child(NodeConnector.class, new NodeConnectorKey(new NodeConnectorId(firstLink.getLinkId().getValue()))).build();
-                                    nodeConnectorRef = new NodeConnectorRef(nodeConnectorInstanceIdentifier);*/
-
                                     NodeConnectorRef srcNodeConnectorRef = getSourceNodeConnectorRef(spLink);
                                     NodeConnectorRef destNodeConnectorRef = getDestNodeConnectorRef(spLink);
 
-                                    /*flowWriter.addMacToMacFlow(hostNodes.get(0).getAddresses().get(0).getMac(),
-                                            hostNodes.get(1).getAddresses().get(0).getMac(),
-                                            nodeConnectorRef);*/
-
                                     LOG.info("CustomLog: TopologyLinkDataChangeHandler: TopologyDataChangeEventProcessor: run: before adding bidirectional flow ");
-                                    flowWriter.addBidirectionalMacToMacFlows(hostNodes.get(0).getAddresses().get(0).getMac(),
-                                            srcNodeConnectorRef,
-                                            hostNodes.get(1).getAddresses().get(0).getMac(),
-                                            destNodeConnectorRef);
+                                    flowWriter.addBidirectionalMacToMacFlows(srcMac, srcNodeConnectorRef, destMac, destNodeConnectorRef);
                                     LOG.info("CustomLog: TopologyLinkDataChangeHandler: TopologyDataChangeEventProcessor: run: after adding bidirectional flow ");
+                                }
+
+                                //Add flows for swtich to host communication
+                                for(HostNode hNode: hNodes.keySet()){
+
+                                    InstanceIdentifier<NodeConnector> nodeConnectorInstanceIdentifier;
+                                    NodeConnectorRef nodeConnectorRef;
+
+                                    nodeConnectorInstanceIdentifier = InstanceIdentifierUtils
+                                            .createNodeConnectorIdentifier(hNodes.get(hNode).getNodeId().getValue(), hNode.getAttachmentPoints().get(0).getTpId().getValue());
+                                    nodeConnectorRef = new NodeConnectorRef(nodeConnectorInstanceIdentifier);
+
+                                    LOG.info("CustomLog: TopologyLinkDataChangeHandler: TopologyDataChangeEventProcessor: run: before adding switch to host flow ");
+
+                                    if(hNode.getAddresses().get(0).getMac().getValue().equals(srcMac.getValue()))
+                                        flowWriter.addMacToMacFlow(destMac, srcMac, nodeConnectorRef);
+                                    if(hNode.getAddresses().get(0).getMac().getValue().equals(destMac.getValue()))
+                                        flowWriter.addMacToMacFlow(srcMac, destMac, nodeConnectorRef);
+                                    LOG.info("CustomLog: TopologyLinkDataChangeHandler: TopologyDataChangeEventProcessor: run: after adding switch to host flow ");
                                 }
                             }
                         }
@@ -622,81 +359,6 @@ public class TopologyLinkDataChangeHandler implements DataChangeListener {
             }
 
             LOG.debug("Done with network graph refresh thread.");
-        }
-
-        /*private List<Link> findPath(NodeId srcId, NodeId destId, HashMap<String, Link> spLinkMap){
-
-            LOG.info("CustomLog: TopologyLinkDataChangeHandler: findPath: started");
-            //Object[] keys = hNodes.keySet().toArray();
-
-            //NodeId srcId = hNodes.get((HostNode)keys[0]).getNodeId();
-            //NodeId destId = hNodes.get((HostNode)keys[1]).getNodeId();
-
-            //Find the shortest path
-            List<Link> spLinks = networkGraphService.getPath(srcId, destId);
-
-            //Add links to map, Map key is the sourceId of the link
-            for(Link spLink: spLinks)
-                spLinkMap.put(spLink.getSource().getSourceNode().getValue(), spLink);
-
-            ListIterator<Link> linkIterator = spLinks.listIterator();
-
-            //Iterate through all the links
-            while(linkIterator.hasNext()){
-
-                Link spLink = linkIterator.next();
-
-                //In case there is no link exists in the list of link returned
-                //with sourceId as the destinationId of this current link
-                //This means all the links were not returned by the algo
-                if(!(spLinkMap.containsKey(spLink.getDestination().getDestNode().getValue()))) {
-                    //Recursively run findPath to find the path between this link's destination id
-                    //And the actual destinationId
-                    findPath(spLink.getDestination().getDestNode(), destId, spLinkMap);
-                }
-
-            }
-
-            *//*for(Link spLink: spLinks) {
-                Link newLink = findLinkWithSrc(spLink.getDestination().getDestNode().getValue(), spLinks);
-            }*//*
-            LOG.info("CustomLog: TopologyLinkDataChangeHandler: findPath: ended");
-            return (List<Link>) spLinkMap.values();
-        }*/
-
-
-        private void createFlows(){
-
-            List<Node> topoNodes = getNodesFromTopology();
-
-            List<HostNode> hostNodes = null;
-            List<Node> switchNodes = null;
-
-            List<Node> hostNodes1 = null;
-
-            if(topoNodes == null || topoNodes.isEmpty())
-                LOG.info("CustomLog: TopologyLinkDataChangeHandler: createAndUpdateFlows: no nodes found");
-            else {
-
-                LOG.info("CustomLog: TopologyLinkDataChangeHandler: createAndUpdateFlows: nodes found");
-
-                hostNodes = new ArrayList<HostNode>();
-                switchNodes = new ArrayList<Node>();
-
-                //hostNodes1 = new ArrayList<Node>();
-
-                for (Node node : topoNodes) {
-                    HostNode hostNode = node.getAugmentation(HostNode.class);
-
-                    if (hostNode != null) {
-                        hostNodes.add(hostNode);
-                        //hostNodes1.add(node);
-                    }
-                    else
-                        switchNodes.add(node);
-                }
-            }
-
         }
 
         private HashMap<String, Link> createLinkMap(List<Link> spLinks){
@@ -709,151 +371,6 @@ public class TopologyLinkDataChangeHandler implements DataChangeListener {
             return sLinkMap;
 
         }
-
-        /*private void printSomeLogs(){
-            if(hostNodes == null || hostNodes.isEmpty())
-                    LOG.info("CustomLog: TopologyLinkDataChangeHandler: TopologyDataChangeEventProcessor: no host nodes found");
-                else {
-
-                    if (switchNodes == null || switchNodes.isEmpty())
-                        LOG.info("CustomLog: TopologyLinkDataChangeHandler: TopologyDataChangeEventProcessor: no switch nodes found");
-                    else {
-
-                        boolean debug = false;
-
-                        //debug logs block starts here
-                        if (debug) {
-
-                            LOG.info("CustomLog: TopologyLinkDataChangeHandler: switchNodes: switch nodes found, size {} ",
-                                    switchNodes.size());
-
-                            NodeId s1 = null;
-                            NodeId s2 = null;
-                            NodeId s3 = null;
-
-                            LOG.info("CustomLog: TopologyLinkDataChangeHandler: switchNodes: parsing ");
-                            for (Node switchNode : switchNodes) {
-
-                                LOG.info("CustomLog: TopologyLinkDataChangeHandler: switchNodes: parsing: ID {} ",
-                                        switchNode.getNodeId().getValue());
-
-                                if (switchNode.getNodeId().getValue().equals("openflow:1"))
-                                    s1 = switchNode.getNodeId();
-                                if (switchNode.getNodeId().getValue().equals("openflow:2"))
-                                    s2 = switchNode.getNodeId();
-                                if (switchNode.getNodeId().getValue().equals("openflow:3"))
-                                    s3 = switchNode.getNodeId();
-                            }
-
-
-                            if (s1 != null && s2 != null) {
-
-                                LOG.info("CustomLog: TopologyLinkDataChangeHandler: TopologyDataChangeEventProcessor: " +
-                                                "Finding shortestPath between {} and {} ",
-                                        s1, s2);
-
-                                List<Link> spLinks1 = networkGraphService.getPath(s1, s2);
-                                if (spLinks1 == null || spLinks1.isEmpty())
-                                    LOG.info("CustomJunkLog: TopologyLinkDataChangeHandler: createAndUpdateFlows: shortest path noth found");
-                                else {
-
-                                    LOG.info("CustomJunkLog: TopologyLinkDataChangeHandler: createAndUpdateFlows: shortestPath found");
-
-                                    for (Link spLink : spLinks1) {
-                                        LOG.info("CustomJunkLog: TopologyLinkDataChangeHandler: createAndUpdateFlows: "
-                                                        + "shortestPath linkID {}, sourceID {}, sourceTp {}, " +
-                                                        "destinationID {}, destinationTp {} ",
-                                                spLink.getLinkId(),
-                                                spLink.getSource().getSourceNode().getValue(),
-                                                spLink.getSource().getSourceTp().getValue(),
-                                                spLink.getDestination().getDestNode().getValue(),
-                                                spLink.getDestination().getDestTp().getValue());
-                                    }
-                                }
-                            }
-
-                            if (switchNodes.size() == 5) {
-
-                                LOG.info("CustomLog: TopologyLinkDataChangeHandler: switchNodes: size is 5 ");
-
-                                s1 = null;
-                                NodeId s5 = null;
-
-                                for (Node switchNode : switchNodes) {
-
-                                    if (switchNode.getNodeId().getValue().equals("openflow:1"))
-                                        s1 = switchNode.getNodeId();
-                                    if (switchNode.getNodeId().getValue().equals("openflow:5"))
-                                        s5 = switchNode.getNodeId();
-                                }
-
-
-                                if (s1 != null && s5 != null) {
-
-                                    LOG.info("CustomLog: TopologyLinkDataChangeHandler: TopologyDataChangeEventProcessor: " +
-                                                    "Finding shortestPath between {} and {} ",
-                                            s1, s5);
-
-                                    List<Link> spLinks1 = networkGraphService.getPath(s1, s5);
-                                    if (spLinks1 == null || spLinks1.isEmpty())
-                                        LOG.info("CustomJunkLog: TopologyLinkDataChangeHandler: createAndUpdateFlows: shortest path noth found");
-                                    else {
-
-                                        LOG.info("CustomJunkLog: TopologyLinkDataChangeHandler: createAndUpdateFlows: shortestPath found");
-
-                                        for (Link spLink : spLinks1) {
-                                            LOG.info("CustomJunkLog: TopologyLinkDataChangeHandler: createAndUpdateFlows: "
-                                                            + "shortestPath linkID {}, sourceID {}, sourceTp {}, " +
-                                                            "destinationID {}, destinationTp {} ",
-                                                    spLink.getLinkId(),
-                                                    spLink.getSource().getSourceNode().getValue(),
-                                                    spLink.getSource().getSourceTp().getValue(),
-                                                    spLink.getDestination().getDestNode().getValue(),
-                                                    spLink.getDestination().getDestTp().getValue());
-                                        }
-                                    }
-                                }
-                            }
-
-                            LOG.info("CustomLog: TopologyLinkDataChangeHandler: hostNodes: findingpath between hosts ");
-
-                            NodeId srcId = null;
-                            NodeId destId = null;
-
-                            for (Node topoNode1 : topoNodes) {
-                                if (topoNode1.getNodeId().getValue().equals("host:00:00:00:00:00:01")) {
-                                    LOG.info("CustomLog: TopologyLinkDataChangeHandler: hostNodes: findingpath between hosts - assigning srcId");
-                                    srcId = topoNode1.getNodeId();
-                                }
-                                if (topoNode1.getNodeId().getValue().equals("host:00:00:00:00:00:02")) {
-                                    LOG.info("CustomLog: TopologyLinkDataChangeHandler: hostNodes: findingpath between hosts - assigning destId");
-                                    destId = topoNode1.getNodeId();
-                                }
-                            }
-
-                            List<Link> spLinks1 = networkGraphService.getPath(srcId, destId);
-                            if (spLinks1 == null || spLinks1.isEmpty())
-                                LOG.info("CustomJunkLog: TopologyLinkDataChangeHandler: hostNodes: findingpath between hosts - path NOT found");
-                            else {
-
-                                LOG.info("CustomJunkLog: TopologyLinkDataChangeHandler: hostNodes: findingpath between hosts - path found");
-
-                                for (Link spLink : spLinks1) {
-                                    LOG.info("CustomJunkLog: TopologyLinkDataChangeHandler: createAndUpdateFlows: "
-                                                    + "shortestPath linkID {}, sourceID {}, sourceTp {}, " +
-                                                    "destinationID {}, destinationTp {} ",
-                                            spLink.getLinkId(),
-                                            spLink.getSource().getSourceNode().getValue(),
-                                            spLink.getSource().getSourceTp().getValue(),
-                                            spLink.getDestination().getDestNode().getValue(),
-                                            spLink.getDestination().getDestTp().getValue());
-                                }
-                            }
-                        }
-                        //debug logs block ends here
-                    }
-                }
-        }*/
 
         private List<Node> getNodesFromTopology() {
             InstanceIdentifier<Topology> topologyInstanceIdentifier = InstanceIdentifierUtils

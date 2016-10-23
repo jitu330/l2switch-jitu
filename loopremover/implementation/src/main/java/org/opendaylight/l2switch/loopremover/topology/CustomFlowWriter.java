@@ -10,7 +10,6 @@ package org.opendaylight.l2switch.loopremover.topology;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import org.opendaylight.l2switch.loopremover.util.InstanceIdentifierUtils;
-//import org.opendaylight.l2switch.util.InstanceIdentifierUtils;
 import org.opendaylight.openflowplugin.api.OFConstants;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
