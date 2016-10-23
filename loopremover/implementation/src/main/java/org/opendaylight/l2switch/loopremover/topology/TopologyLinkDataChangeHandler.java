@@ -613,15 +613,7 @@ public class TopologyLinkDataChangeHandler implements DataChangeListener {
                                             srcNodeConnectorRef,
                                             hostNodes.get(1).getAddresses().get(0).getMac(),
                                             destNodeConnectorRef);
-
-
-                                    LOG.info("CustomLog: TopologyLinkDataChangeHandler: TopologyDataChangeEventProcessor: run: before adding bidirectional flow " +
-                                                    "src {}, dest {}, link {} ",
-                                            hostNodes.get(0).getAddresses().get(0).getMac(),
-                                            hostNodes.get(1).getAddresses().get(0).getMac(),
-                                            spLink.getLinkId().getValue());
-
-
+                                    LOG.info("CustomLog: TopologyLinkDataChangeHandler: TopologyDataChangeEventProcessor: run: after adding bidirectional flow ");
                                 }
                             }
                         }

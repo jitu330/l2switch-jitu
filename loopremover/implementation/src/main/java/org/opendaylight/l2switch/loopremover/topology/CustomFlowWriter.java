@@ -158,13 +158,16 @@ public class CustomFlowWriter {
 
         }
 
-        LOG.info("CustomLog: CustomFlowWriter: addMacToMacFlowsUsingShortestPath");
+        LOG.info("CustomLog: CustomFlowWriter: addBidirectionalMacToMacFlows");
 
         // add destMac-To-sourceMac flow on source port
-        addMacToMacFlow(destMac, sourceMac, sourceNodeConnectorRef);
+        //addMacToMacFlow(destMac, sourceMac, sourceNodeConnectorRef);
+        //Jitu
+        addMacToMacFlow(sourceMac, destMac, sourceNodeConnectorRef);
 
         // add sourceMac-To-destMac flow on destination port
-        addMacToMacFlow(sourceMac, destMac, destNodeConnectorRef);
+        //addMacToMacFlow(sourceMac, destMac, destNodeConnectorRef);
+        addMacToMacFlow(destMac, sourceMac, destNodeConnectorRef);
     }
 
     /**
@@ -192,10 +195,12 @@ public class CustomFlowWriter {
     private Flow createMacToMacFlow(Short tableId, int priority, MacAddress sourceMac, MacAddress destMac,
             NodeConnectorRef destPort) {
 
+        LOG.info("CustomLog: CustomFlowWriter: createMacToMacFlow");
+
         // start building flow
         FlowBuilder macToMacFlow = new FlowBuilder() //
                 .setTableId(tableId) //
-                .setFlowName("mac2mac");
+                .setFlowName("customflow");
 
         // use its own hash code for id.
         macToMacFlow.setId(new FlowId(Long.toString(macToMacFlow.hashCode())));
@@ -213,6 +218,11 @@ public class CustomFlowWriter {
         Match match = new MatchBuilder().setEthernetMatch(ethernetMatch).build();
 
         Uri destPortUri = destPort.getValue().firstKeyOf(NodeConnector.class, NodeConnectorKey.class).getId();
+
+        LOG.info("CustomLog: CustomFlowWriter: createMacToMacFlow: source {} & dest {}, " +
+                "node {} and outPort {} ",
+                sourceMac.getValue(), destMac.getValue(), destPort.getValue().firstIdentifierOf(Node.class),
+                destPortUri.getValue());
 
         Action outputToControllerAction = new ActionBuilder() //
                 .setOrder(0)
